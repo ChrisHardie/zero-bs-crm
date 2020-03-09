@@ -523,14 +523,20 @@ class zbsDAL_transactions extends zbsDAL_ObjectLayer {
             'isNotTagged'       => false, // 1x INT OR array(1,2,3)
             'ownedBy'           => false,
             'externalSource'    => false, // e.g. paypal
-            'olderThan'         => false, // uts
-            'newerThan'         => false, // uts
             'hasStatus'         => false, // Lead (this takes over from the quick filter post 19/6/18)
             'otherStatus'       => false, // status other than 'Lead'
             'assignedContact'   => false, // assigned to contact id (int)
             'assignedCompany'   => false, // assigned to company id (int)
             'assignedInvoice'   => false, // assigned to invoice id (int)
-            'quickFilters'      => false, // booo
+            'quickFilters'      => false, 
+
+            // date ranges            
+            'olderThan'         => false, // uts - checks 'date'
+            'newerThan'         => false, // uts - checks 'date'
+            'paidBefore'        => false, // uts - checks 'date_paid'
+            'paidAfter'         => false, // uts - checks 'date_paid'
+            'createdBefore'     => false, // uts - checks 'created'
+            'createdAfter'      => false, // uts - checks 'created'
 
             // returns
             'count'             => false,
@@ -719,11 +725,22 @@ class zbsDAL_transactions extends zbsDAL_ObjectLayer {
 
             }
 
-            // quick addition for mike
-            #} olderThan
-            if (!empty($olderThan) && $olderThan > 0 && $olderThan !== false) $wheres['olderThan'] = array('zbst_created','<=','%d',$olderThan);
-            #} newerThan
-            if (!empty($newerThan) && $newerThan > 0 && $newerThan !== false) $wheres['newerThan'] = array('zbst_created','>=','%d',$newerThan);
+            // Timestamp checks:
+
+                #} olderThan
+                if (!empty($olderThan) && $olderThan > 0 && $olderThan !== false) $wheres['olderThan'] = array('zbst_date','<=','%d',$olderThan);
+                #} newerThan
+                if (!empty($newerThan) && $newerThan > 0 && $newerThan !== false) $wheres['newerThan'] = array('zbst_date','>=','%d',$newerThan);
+
+                #} createdBefore
+                if (!empty($createdBefore) && $createdBefore > 0 && $createdBefore !== false) $wheres['createdBefore'] = array('zbst_created','<=','%d',$createdBefore);
+                #} createdAfter
+                if (!empty($createdAfter) && $createdAfter > 0 && $createdAfter !== false) $wheres['createdAfter'] = array('zbst_created','>=','%d',$createdAfter);
+
+                #} paidBefore
+                if (!empty($paidBefore) && $paidBefore > 0 && $paidBefore !== false) $wheres['paidBefore'] = array('zbst_date_paid','<=','%d',$paidBefore);
+                #} paidAfter
+                if (!empty($paidAfter) && $paidAfter > 0 && $paidAfter !== false) $wheres['paidAfter'] = array('zbst_date_paid','>=','%d',$paidAfter);
 
             // status
             if (!empty($hasStatus) && $hasStatus !== false) $wheres['hasStatus'] = array('zbst_status','=','%s',$hasStatus);

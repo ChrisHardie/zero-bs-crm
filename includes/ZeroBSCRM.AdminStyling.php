@@ -243,7 +243,6 @@ function zbs_color_grabber(){
     $current_color = get_user_option( 'admin_color' );
     echo '<script type="text/javascript">var zbsJS_admcolours = '.json_encode($_wp_admin_css_colors[$current_color]).';</script>';
     echo '<script type="text/javascript">var zbsJS_unpaid = "'. __('unpaid',"zero-bs-crm") .'";</script>';
-    echo '<script type="text/javascript">var zbJS_curr = "'. zeroBSCRM_getCurrencyChr() .'";</script>';
     $zbsadmincolors = $_wp_admin_css_colors[$current_color]->colors;
     ?>
     <style>

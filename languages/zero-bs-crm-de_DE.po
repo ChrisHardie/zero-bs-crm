@@ -14,6 +14,39 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 
+#. Placeholders to be localised:
+#: ZeroBSCRM.DAL3.Obj.Contacts.php*
+msgid "e.g. john@gmail.com"
+msgstr ""
+
+msgid "e.g. John"
+msgstr ""
+
+msgid "e.g. Doe"
+msgstr ""
+
+msgid "e.g. New York"
+msgstr ""
+
+msgid "e.g. Kings County"
+msgstr ""
+
+msgid "e.g. 10019"
+msgstr ""
+
+msgid "e.g. Los Angeles"
+msgstr ""
+
+msgid "e.g. 90001"
+msgstr ""
+
+msgid "e.g. 877 2733049"
+msgstr ""
+
+#. Mobile equivilent
+msgid "e.g. 877 2733050"
+msgstr ""
+
 #: includes/ZeroBSCRM.SystemChecks.php:155
 msgid "Appears Okay"
 msgstr "Erscheint in Ordnung"

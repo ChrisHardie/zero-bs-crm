@@ -95,7 +95,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
             // output model
             'input_type' => 'text',
             'label' => 'City',
-            'placeholder'=> 'e.g. London',
+            'placeholder'=> 'e.g. New York',
             'area'=> 'Main Address',
             'migrate'=>'addresses',
             'max_len' => 100
@@ -106,7 +106,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
             // output model
             'input_type' => 'text',
             'label' => 'County',
-            'placeholder'=> 'e.g. Greater London',
+            'placeholder'=> 'e.g. Kings County',
             'area'=> 'Main Address',
             'migrate'=>'addresses',
             'max_len' => 200
@@ -117,7 +117,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
             // output model
             'input_type' => 'text',
             'label' => 'Post Code',
-            'placeholder'=> 'e.g. E1 9XJ',
+            'placeholder'=> 'e.g. 10019',
             'area'=> 'Main Address',
             'migrate'=>'addresses',
             'max_len' => 50
@@ -167,7 +167,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
             // output model
             'input_type' => 'text',
             'label' => 'City',
-            'placeholder'=> 'e.g. London',
+            'placeholder'=> 'e.g. Los Angeles',
             'area'=> 'Second Address',
             'migrate'=>'addresses',
             'opt'=>'secondaddress',
@@ -180,7 +180,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
             // output model
             'input_type' => 'text',
             'label' => 'County',
-            'placeholder'=> 'e.g. Greater London',
+            'placeholder'=> 'e.g. Los Angeles',
             'area'=> 'Second Address',
             'migrate'=>'addresses',
             'opt'=>'secondaddress',
@@ -193,7 +193,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
             // output model
             'input_type' => 'text',
             'label' => 'Post Code',
-            'placeholder'=> 'e.g. E1 9XJ',
+            'placeholder'=> 'e.g. 90001',
             'area'=> 'Second Address',
             'migrate'=>'addresses',
             'opt'=>'secondaddress',
@@ -220,7 +220,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
             // output model
             'input_type' => 'tel',
             'label' => 'Main Telephone',
-            'placeholder'=> 'e.g. 01234 567 891',
+            'placeholder'=> 'e.g. 877 2733049',
             'max_len' => 40
         ),
         'sectel'            => array(
@@ -229,7 +229,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
             // output model
             'input_type' => 'tel',
             'label' => 'Secondary Telephone',
-            'placeholder'=> 'e.g. 01234 567 891',
+            'placeholder'=> 'e.g. 877 2733049',
             'max_len' => 40
         ),
         'email'            => array(
@@ -362,6 +362,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
             'withQuotes'        => false,
             'withInvoices'      => false,
             'withTransactions'  => false,
+            'withTasks'         => false,
             //'withLogs'          => false,
             'withLastLog'       => false,
             'withTags'          => false,
@@ -722,6 +723,24 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
 
                     }
 
+                    #} With Tasks?
+                    if ($withTasks){
+                        
+                        //DAL3 ver, more perf, gets all
+                        $res['tasks'] = $zbs->DAL->events->getEvents(array(
+
+                                'assignedCompany'   => $potentialRes->ID, // assigned to company id (int)
+                                'page'       => -1,
+                                'perPage'       => -1,
+                                'ignoreowner'   => zeroBSCRM_DAL2_ignoreOwnership(ZBS_TYPE_EVENT),                                    
+                                'sortByField'   => 'zbse_start',
+                                'sortOrder'     => 'DESC',
+                                'withAssigned'  => false // no need, it's assigned to this obj already
+
+                            ));
+
+                    }
+
 
                     return $res;
 
@@ -785,6 +804,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
             'withQuotes'        => false,
             'withInvoices'      => false,
             'withTransactions'  => false,
+            'withTasks'         => false,
             'withTags'          => false,
             'withOwner'         => false,
             'withLogs'          => false,
@@ -822,6 +842,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
                 $withLogs = false;
                 $withLastLog = false;
                 $withContacts = false;
+                $withTasks = false;
             }
 
             #} If simplified, turn off extra gumpf
@@ -832,6 +853,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
                 $withLogs = false;
                 $withLastLog = false;
                 $withContacts = false;
+                $withTasks = false;
             }
 
             #} If onlyColumns, validate
@@ -868,6 +890,7 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
                     $withLogs = false;
                     $withLastLog = false;
                     $withContacts = false;
+                    $withTasks = false;
 
                 } else {
 
@@ -1456,6 +1479,24 @@ class zbsDAL_companies extends zbsDAL_ObjectLayer {
                                     'page'       => -1,
                                     'perPage'       => -1,
                                     'ignoreowner'   => zeroBSCRM_DAL2_ignoreOwnership(ZBS_TYPE_TRANSACTION)
+
+                                ));
+
+                        }
+
+                        #} ... brutal for mvp #DB1LEGACY (TOMOVE)
+                        if ($withTasks){
+                            
+                            //DAL3 ver, more perf, gets all
+                            $res['tasks'] = $zbs->DAL->events->getEvents(array(
+
+                                    'assignedCompany'   => $resDataLine->ID, // assigned to company id (int)
+                                    'page'       => -1,
+                                    'perPage'       => -1,
+                                    'ignoreowner'   => zeroBSCRM_DAL2_ignoreOwnership(ZBS_TYPE_EVENT),                                    
+                                    'sortByField'   => 'zbse_start',
+                                    'sortOrder'     => 'DESC',
+                                    'withAssigned'  => false // no need, it's assigned to this obj already
 
                                 ));
 

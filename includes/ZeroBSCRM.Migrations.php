@@ -49,7 +49,8 @@ global $zeroBSCRM_migrations; $zeroBSCRM_migrations = array(
 	'29999', // pre v3.0 - set to Flush permalinks 
 	'3000', // 3.0 - Migrate all the THINGS
 	'305', // 3.0.5 - catch instances where really old installs saved customer statuses as trans statuses gh-179
-	'308' // 3.0.8 - Anyone with pdf module installed already, install pdf fonts for them
+	'308', // 3.0.8 - Anyone with pdf module installed already, install pdf fonts for them
+	'3012', // 3.0.12 - Remove any uploads\ directory which may have been accidentally created pre 2.96.6
 	);
 
 global $zeroBSCRM_migrations_requirements; $zeroBSCRM_migrations_requirements = array(
@@ -2227,6 +2228,28 @@ DROP INDEX `zbsset_key`;";
 
 		// fini
 		zeroBSCRM_migrations_markComplete('308',array('updated'=>1));
+
+	}
+
+
+	// 3.0.12 - Remove any uploads\ directory which may have been accidentally created pre 2.96.6
+	function zeroBSCRM_migration_3012(){
+
+		global $zbs;
+
+		// directory created in error pre 2.96.6:
+		$dirCreatedInErr = WP_CONTENT_DIR.'/uploads\\';
+
+		// directory exists & is empty?
+		if (is_dir($dirCreatedInErr) && zeroBSCRM_is_dir_empty($dirCreatedInErr)){
+
+			// remove it
+			rmdir($dirCreatedInErr);
+
+		}
+
+		// fini
+		zeroBSCRM_migrations_markComplete('3012',array('updated'=>1));
 
 	}
 

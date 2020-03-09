@@ -206,7 +206,7 @@ function zbscrmjs_build_custInv_dropdown(custID,preSelectedInvID){
 
 						if (typeof ele.meta != "undefined"){
 							// val
-							if (typeof ele.meta.val != "undefined") invStr += ' (' + window.zbJS_curr + ele.meta.val + ')';
+							if (typeof ele.meta.val != "undefined") invStr += ' (' + window.zbs_root.currencyOptions.currencyStr + ele.meta.val + ')';
 							// date
 							if (typeof ele.meta.date != "undefined") invStr += ' - ' + ele.meta.date;
 

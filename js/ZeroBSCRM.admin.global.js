@@ -34,7 +34,7 @@ jQuery(document).ready(function(){
 		zbscrm_JS_watchInputsAndDirty();
 		zbscrm_JS_dirtyCatch();
 
-		//menu stuff
+		// menu stuff
 		zbscrm_JS_adminMenuDropdown();
 
 		// compat classes
@@ -137,6 +137,25 @@ function zbscrm_JS_adminMenuDropdown(){
 	});
 
 
+	// if calypso...
+	if (zbscrm_JS_isCalypso()) {
+
+		// if calypso, we save the #wpwrap top value so we can toggle when we fullscreen
+		window.zbscrm_JS_wpwraptop = jQuery('#wpwrap').css('top');
+
+		// if calypso, loading on an embed page, already full screen, need to run this to re-adjust/hide:
+    	setTimeout(function(){
+
+    		if (!jQuery('#zbs-main-logo-wrap').hasClass('menu-open')){ 
+    			zbscrm_JS_fullscreenModeOn(jQuery('#zbs-main-logo-wrap')); 
+    		}
+
+	    },0);
+
+    }
+
+
+	// bind the toggle
     jQuery('#zbs-main-logo-wrap').unbind('click').click(function(e){
 
     	if(!window.zbscrmjs_adminMenuBlocker){
@@ -145,97 +164,96 @@ function zbscrm_JS_adminMenuDropdown(){
 
         	if (jQuery(this).hasClass('menu-open')){
 
-        		// this jazz should be a separate func so can call openMenu closeMenu etc.
-
-        		// major class
-        		jQuery('body').addClass('zbs-fullscreen');
-
-        		// open it
-        		/* moved to css
-        		if(customAdmin == 'material'){
-        			jQuery('#wpcontent').css({"margin-left": "-10px","margin-top": "-50px"});
-        		}else{
-					jQuery('#wpcontent').css({"margin-left": "0px","margin-top": "-32px"});
-				} */
-				// instead of above:
-				// not req. Major body class deals with :) jQuery('#wpcontent').addClass('zbs-menu-open');
-
-        		jQuery(this).removeClass('menu-open'); //not req..addClass('menu-closed');
-        		jQuery("#wpadminbar, #adminmenuback, #adminmenuwrap").hide();
-
-				//redraw the overlay
-				if (typeof hopscotch != "undefined") hopscotch.refreshBubblePosition();
-
-      			// & save state
-				var data = {
-					'action': 'zbs_admin_top_menu_save',
-					'sec': window.zbscrmjs_topMenuSecToken,
-					'hide': 1
-				};
-				jQuery.ajax({
-				      type: "POST",
-				      url: ajaxurl,
-				      "data": data,
-				      dataType: 'json',
-				      timeout: 20000,
-				      success: function(response) {
-				      	// blocker
-				      	window.zbscrmjs_adminMenuBlocker = false;
-				      },
-				      error: function(response){ 
-				      	// blocker
-				      	window.zbscrmjs_adminMenuBlocker = false;
-				      }
-				});  		
+        		// go fullscreen
+        		zbscrm_JS_fullscreenModeOn(this);
 
         	} else {
 
-        		// major class
-        		jQuery('body').removeClass('zbs-fullscreen');
-
-        		// close it
-        		/* moved to css
-        		if(customAdmin == 'material'){
-					jQuery('#wpcontent').css({"margin-left": "230px","margin-top": "0px"});
-           		}else{
-					jQuery('#wpcontent').css({"margin-left": "160px","margin-top": "0px"});
-				} */
-				// instead of above:
-				// not req. Major body class deals with :) jQuery('#wpcontent').removeClass('zbs-menu-open');
-
-
-        		jQuery(this).addClass('menu-open'); //not req. .removeClass('menu-closed');
-        		jQuery("#wpadminbar, #adminmenuback, #adminmenuwrap").show();
-
-				//redraw the overlay
-				if (typeof hopscotch != "undefined") hopscotch.refreshBubblePosition();
-        	
-      			// & save state
-				var data = {
-					'action': 'zbs_admin_top_menu_save',
-					'sec': window.zbscrmjs_topMenuSecToken,
-					'hide': 0
-				};
-				jQuery.ajax({
-				      type: "POST",
-				      url: ajaxurl,
-				      "data": data,
-				      dataType: 'json',
-				      timeout: 20000,
-				      success: function(response) {
-				      	// blocker
-				      	window.zbscrmjs_adminMenuBlocker = false;
-				      },
-				      error: function(response){ 
-				      	// blocker
-				      	window.zbscrmjs_adminMenuBlocker = false;
-				      }
-				});  
+        		// close fullscreen mode
+        		zbscrm_JS_fullscreenModeOff(this);
 
         	}
-
         }
     });
+
+}
+
+// Enable 'full screen mode'
+function zbscrm_JS_fullscreenModeOn(wrapperElement){
+
+	// adjust classes & hide menu bar etc.
+	// any work here, take account of calypsoify results
+	jQuery('body').addClass('zbs-fullscreen');
+	jQuery(wrapperElement).removeClass('menu-open'); 
+	jQuery("#wpadminbar, #adminmenuback, #adminmenuwrap, #calypso-sidebar-header").hide();
+
+	// if we're in calypso, also adjust this:
+	if (zbscrm_JS_isCalypso() && typeof window.zbscrm_JS_wpwraptop != "undefined") jQuery('#wpwrap').css('top',0);
+
+	// redraw the overlay
+	if (typeof hopscotch != "undefined") hopscotch.refreshBubblePosition();
+
+	// & save state
+	var data = {
+		'action': 'zbs_admin_top_menu_save',
+		'sec': window.zbscrmjs_topMenuSecToken,
+		'hide': 1
+	};
+	jQuery.ajax({
+	      type: "POST",
+	      url: ajaxurl,
+	      "data": data,
+	      dataType: 'json',
+	      timeout: 20000,
+	      success: function(response) {
+	      	// blocker
+	      	window.zbscrmjs_adminMenuBlocker = false;
+	      },
+	      error: function(response){ 
+	      	// blocker
+	      	window.zbscrmjs_adminMenuBlocker = false;
+	      }
+	}); 
+
+}
+
+// Disable 'full screen mode'
+function zbscrm_JS_fullscreenModeOff(wrapperElement){
+
+	// adjust classes & show menu bar etc.
+	// any work here, take account of calypsoify results
+	jQuery('body').removeClass('zbs-fullscreen');
+	jQuery(wrapperElement).addClass('menu-open');
+	jQuery("#wpadminbar, #adminmenuback, #adminmenuwrap, #calypso-sidebar-header").show();
+
+	// if we're in calypso, also adjust this:
+	if (zbscrm_JS_isCalypso() && typeof window.zbscrm_JS_wpwraptop != "undefined") jQuery('#wpwrap').css('top',window.zbscrm_JS_wpwraptop);
+
+	// redraw the overlay
+	if (typeof hopscotch != "undefined") hopscotch.refreshBubblePosition();
+
+	// & save state
+	var data = {
+		'action': 'zbs_admin_top_menu_save',
+		'sec': window.zbscrmjs_topMenuSecToken,
+		'hide': 0
+	};
+	jQuery.ajax({
+	      type: "POST",
+	      url: ajaxurl,
+	      "data": data,
+	      dataType: 'json',
+	      timeout: 20000,
+	      success: function(response) {
+	      	// blocker
+	      	window.zbscrmjs_adminMenuBlocker = false;
+	      },
+	      error: function(response){ 
+	      	// blocker
+	      	window.zbscrmjs_adminMenuBlocker = false;
+	      }
+	});  
+
 }
 
 // used by hopscotch to intefere, as well as on init
@@ -1148,9 +1166,7 @@ function zeroBSCRMJS_formatCurrency(c){
 	} else {
 
 		// SHOULD NEVER RUN
-
-		// Debug console.log('(2) C:' + c + ' becomes ' + window.zbJS_curr + zeroBSCRMJS_number_format_i18n(c));
-
+		
 		// fallback to curr + zeroBSCRMJS_number_format_i18n
 		return window.zbs_root.currencyOptions.symbol + zeroBSCRMJS_number_format_i18n(c);
 
@@ -1880,4 +1896,15 @@ function zbscrm_JS_bindCloseLogs(){
 }
 /* ========================================================================================== 
     / Global Dismiss funcs (e.g. notifications)
+========================================================================================== */
+
+/* ========================================================================================== 
+    Calypso related functions
+========================================================================================== */
+function zbscrm_JS_isCalypso(){
+
+	return jQuery('#calypso-sidebar-header').length;
+}
+/* ========================================================================================== 
+    / Calypso related functions
 ========================================================================================== */

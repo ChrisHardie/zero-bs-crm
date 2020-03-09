@@ -3295,7 +3295,7 @@ function zeroBSCRM_db300migrateClose(){
 			// TAGS
 			$tags = wp_get_object_terms($fullObj['id'],'zerobscrm_transactiontag',array('order' => 'ASC','orderby' => 'name'));
 			// cycle through + add to db if not present
-			$tagIDs = array(); if (count($tags) > 0) {
+			$tagIDs = array(); if (is_array($tags) && count($tags) > 0) {
 				foreach ($tags as $t){
 
 					$potentialID = (int)$zbs->DAL->getTag(-1,array(

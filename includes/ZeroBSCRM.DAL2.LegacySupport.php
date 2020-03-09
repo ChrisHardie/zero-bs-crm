@@ -106,6 +106,18 @@ function zeroBS_customerEmail($contactID='',$contactArr=false){
 
 }
 
+/**
+ * Retrieves all emails againast a contact
+ * For DAL2, this is only the main
+ *
+ * @var int contactID
+ */
+function zeroBS_customerEmails($contactID=''){
+	
+	global $zbs; return array($zbs->DAL->contacts->getContactEmail($contactID));
+
+}
+
 function zeroBS_customerMobile($contactID='',$contactArr=false){
 	
 	global $zbs; return $zbs->DAL->getContactMobile($contactID);

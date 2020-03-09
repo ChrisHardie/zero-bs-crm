@@ -49,17 +49,33 @@ class zeroBSCRM_list{
             'postPage' => false,    //manage-transactions
             'langLabels' => array(
                     
-                    // defaults global list views
+                    // bulk actions - general
+                    'view' => __('View',"zero-bs-crm"),
+                    'edit' => __('Edit',"zero-bs-crm"),
+                    'deletestr' => __('Delete',"zero-bs-crm"),
                     'nocustomer' => __('Not Assigned',"zero-bs-crm"),
-
-                    // delete
                     'areyousure' => __('Are you sure?',"zero-bs-crm"),
+                    'acceptyesdoit' => __('Yes, accept',"zero-bs-crm"),
+                    'yesproceed'  => __('Yes, proceed',"zero-bs-crm"),
+                    'changestatus' => __('Change Status',"zero-bs-crm"),
+                    'yesupdate' => __('Yes, update',"zero-bs-crm"),
+                    
+                    // bulk actions - delete
                     'areyousurethese' => __('Are you sure you want to delete these?',"zero-bs-crm"),
                     'yesdelete' => __('Yes, delete!','zero-bs-crm'),
+                    'noleave' => __('No, leave them',"zero-bs-crm"),
+                    'yesthose' => __('Yes, remove everything',"zero-bs-crm"),
+                    'deleted' => __('Deleted',"zero-bs-crm"),
+                    'notdeleted' => __('Could not delete!',"zero-bs-crm"),
 
                     // tag related
                     'addtags' => __('Add tag(s)',"zero-bs-crm"),
+                    'addtags' => __('Add tags',"zero-bs-crm"),
                     'removetags' => __('Remove tag(s)',"zero-bs-crm"),
+                    'addthesetags' => __('Add Tags',"zero-bs-crm"),
+                    'whichtags' => __('Which Tag(s)?',"zero-bs-crm"),
+                    'whichtagsadd' => __('Which Tag(s) would you like to add?',"zero-bs-crm"),
+                    'whichtagsremove' => __('Which Tag(s) would you like to remove?',"zero-bs-crm"),                    
                     'addthesetags' => __('Add Tags',"zero-bs-crm"),
                     'tagsadded' => __('Tags Added',"zero-bs-crm"),
                     'tagsaddeddesc' => __('Your tags have been successsfully added.',"zero-bs-crm"),
@@ -72,6 +88,14 @@ class zeroBSCRM_list{
                     'tagsremoveddesc' => __('Your tags have been successsfully removed.',"zero-bs-crm"),
                     'tagsnotremoved' => __('Tags Not Removed',"zero-bs-crm"),
                     'tagsnotremoveddesc' => __('Your tags could not be removed.',"zero-bs-crm"),
+                    'notags' => __('You do not have any tags',"zero-bs-crm"),
+               
+
+                    // bulk actions - merge 2 records
+                    'merged' => __('Merged',"zero-bs-crm"),
+                    'notmerged' => __('Not Merged',"zero-bs-crm"),
+                    'yesmerge' => __('Yes, merge them',"zero-bs-crm"),
+
             ),
             'bulkActions' => array(),
             'sortables' => array('id'),

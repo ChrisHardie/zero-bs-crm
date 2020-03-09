@@ -557,11 +557,16 @@ class zbsDAL {
 
         if ($objID !== -1 && $objTypeID > 0){
 
-            return $this->getFieldByID(array(
-                'id' => $objID,
-                'objtype' => $objTypeID,
+            return $this->setFieldByID(array(
+
+                'objID' => $objID,
+                'objTypeID' => $objTypeID,
+
                 'colname' => 'zbs_owner',
-                'ignoreowner'=>true));
+                'coldatatype' => '%d', // %d/s
+                'newValue' => $ownerID
+
+            ));
 
         }
 
@@ -5733,6 +5738,42 @@ class zbsDAL {
     // =========== / CRONLOGS  =======================================================
     // ===============================================================================
 
+    // ===============================================================================
+    // ============= GENERIC  ========================================================
+
+
+    /**
+     * Wrapper function for emptying tables (use with care)
+     * ... can only truncate tables in our ZBSCRM_t
+     *
+     * @param string $tableKey (refers to ZBSCRM_t global)
+     *
+     * @return result
+     */
+    public function truncate($tableKey=''){
+
+        global $ZBSCRM_t;
+
+        if (is_string($tableKey) && !empty($tableKey) && isset($ZBSCRM_t[$tableKey])){
+            
+            global $wpdb;
+            return $wpdb->query("TRUNCATE TABLE `".$ZBSCRM_t[$tableKey]."`");
+
+        }
+
+        return false;
+
+    }
+
+    // =========== / GENERIC  ========================================================
+    // ===============================================================================
+
+
+
+
+
+
+
 /* ======================================================
    / DAL CRUD
    ====================================================== */
@@ -6189,7 +6230,7 @@ class zbsDAL {
                 global $wpdb;
 
                 // got table?
-                $tableName = $this->lazyTable($objtype);
+                $tableName = $this->lazyTable($objTypeID);
 
                 if (empty($tableName)) return false;
 

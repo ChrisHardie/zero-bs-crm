@@ -4887,850 +4887,831 @@ function ZeroBSCRM_accept_quote(){
 			$actionstr = ''; if (isset($_POST['actionstr'])) $actionstr = sanitize_text_field($_POST['actionstr']);
 			$idsToChange = zeroBSCRM_dataIO_postedArrayOfInts($_POST['ids']);
 
-			#} switch by type
-			switch ($objtype){
+			// Check ID's legit
+			$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
 
-				case 'customer':
+				$intID = (int)$id;
+				if ($intID > 0) $legitIDs[] = $intID;
 
-					// check id's legit
-					$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
+			}
 
-						$intID = (int)$id;
-						if ($intID > 0) $legitIDs[] = $intID;
+			// Any ID's to process?
+			if (count($legitIDs) > 0){
 
-					}
+				// Switch by type
+				switch ($objtype){
 
+					case 'customer':
 
-					if (count($legitIDs) > 0){
+							// Actions:
+							switch ($actionstr){
 
-						// actions:
-						switch ($actionstr){
+								// delete customers
+								case 'delete':
 
-							// delete customers
-							case 'delete':
-
-								// delete sub stuff?
-								$leaveOrphans = true; if (isset($_POST['leaveorphans']) && $_POST['leaveorphans'] != "1") $leaveOrphans = false;
-
-
-								// cycle through + delete (should have sanity checked via SWAL)
-								$deleted = 0;
-								foreach ($legitIDs as $id){
-
-									// delete all orphans
-									zeroBS_deleteCustomer($id,$leaveOrphans);
-									$deleted++;
-
-								}
-
-								$passBack['deleted'] = $deleted;
-
-								#} Return
-								header('Content-Type: application/json'); 
-								echo json_encode($passBack);
-								exit();
+									// delete sub stuff?
+									$leaveOrphans = true; if (isset($_POST['leaveorphans']) && $_POST['leaveorphans'] != "1") $leaveOrphans = false;
 
 
-								break;
-
-							// add tag(s) to customers
-							case 'addtag':
-
-								// retrieve tag (array of id's)
-								$tagArr = zeroBSCRM_dataIO_postedArrayOfInts($_POST['tags']);
-								$cleanTags = array();
-								if (is_array($tagArr) && count($tagArr) > 0) foreach ($tagArr as $t){
-
-									$tInt = (int)$t;
-									if ($tInt > 0) $cleanTags[] = $tInt;
-
-								}
-
-								if (count($cleanTags) > 0){
-
-									// tags to add 
-
-										// cycle through + add tag
-										$tagged = 0;
-										foreach ($legitIDs as $id){
-
-											// pass as array of term ID's :)
-											// true here = append 
-											// https://codex.wordpress.org/Function_Reference/wp_set_post_terms
-											if ($zbs->isDAL3()){
-												
-												// DAL3
-												$zbs->DAL->addUpdateObjectTags(array(
-														'objid' 		=> $id,
-														'objtype' 		=> ZBS_TYPE_CONTACT,
-														'tagIDs'		=> $cleanTags,
-														'mode'			=> 'append'
-												));
-												
-											} else {
-
-												// DAL2<=
-												zeroBSCRM_DAL2_set_post_terms($id,$cleanTags,'zerobscrm_customertag',true);
-
-											}
-
-											// no checks.?
-											$tagged++;
-
-										}
-
-										$passBack['tagged'] = $tagged;
-
-										#} Return
-										header('Content-Type: application/json'); 
-										echo json_encode($passBack);
-										exit();
-
-								} else {
-
-									// no tags
-
-								}
-
-								break;
-
-							// remove tag(S) from customers
-							case 'removetag':
-
-								// retrieve tag (array of id's)
-								$tagArr = zeroBSCRM_dataIO_postedArrayOfInts($_POST['tags']);
-								$cleanTags = array();
-								if (is_array($tagArr) && count($tagArr) > 0) foreach ($tagArr as $t){
-
-									$tInt = (int)$t;
-									if ($tInt > 0) $cleanTags[] = $tInt;
-
-								}
-
-								if (count($cleanTags) > 0){
-
-									// tags to add 
-
-										// cycle through + remove tags
-										$untagged = 0;
-										foreach ($legitIDs as $id){
-
-											// pass as array of term ID's :)
-											// https://codex.wordpress.org/Function_Reference/wp_remove_object_terms
-											zeroBSCRM_DAL2_remove_object_terms($id,$cleanTags,'zerobscrm_customertag');
-
-											// no checks.?
-											$untagged++;
-
-										}
-
-										$passBack['untagged'] = $untagged;
-
-										#} Return
-										header('Content-Type: application/json'); 
-										echo json_encode($passBack);
-										exit();
-
-								} else {
-
-									// no tags
-
-								}
-
-
-								break;
-
-							// merge customers
-							case 'merge':
-
-								// merge which into which
-								$dominant = false; if (isset($_POST['dominant']) && !empty($_POST['dominant'])) $dominant = (int)sanitize_text_field($_POST['dominant']);
-								$slave = false; if (!empty($dominant)){
-
-									// discern slave (should only ever be 2 id's)
+									// cycle through + delete (should have sanity checked via SWAL)
+									$deleted = 0;
 									foreach ($legitIDs as $id){
-										if ($id != $dominant) $slave = $id;
+
+										// delete all orphans
+										zeroBS_deleteCustomer($id,$leaveOrphans);
+										$deleted++;
+
 									}
 
-								}
+									$passBack['deleted'] = $deleted;
 
-								if (!empty($dominant) && !empty($slave)){
-
-									$passBack['merged'] = zeroBSCRM_mergeCustomers($dominant,$slave);
-
-								} else {
-
-									$passBack = false;
-
-								}
-
-								#} Return
-								header('Content-Type: application/json'); 
-								echo json_encode($passBack);
-								exit();
+									#} Return
+									header('Content-Type: application/json'); 
+									echo json_encode($passBack);
+									exit();
 
 
-								break;
+									break;
 
-						}
+								// add tag(s) to customers
+								case 'addtag':
 
-					} else {
+									zeroBSCRM_bulkAction_enact_addTags($legitIDs,ZBS_TYPE_CONTACT,'zerobscrm_customertag');
 
-						// NO IDS!
+									break;
 
-					}
+								// remove tag(S) from customers
+								case 'removetag':
 
+									zeroBSCRM_bulkAction_enact_removeTags($legitIDs,ZBS_TYPE_CONTACT,'zerobscrm_customertag');
 
-					#} Return - will be an error if here, really!?!? should be passsing headers as such.
-					header('Content-Type: application/json'); 
-					echo json_encode($passBack);
-					exit();
+									break;
 
-					break;
+								// merge customers
+								case 'merge':
 
+									// merge which into which
+									$dominant = false; if (isset($_POST['dominant']) && !empty($_POST['dominant'])) $dominant = (int)sanitize_text_field($_POST['dominant']);
+									$slave = false; if (!empty($dominant)){
 
-
-				case 'company':
-
-					// check id's legit
-					$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
-
-						$intID = (int)$id;
-						if ($intID > 0) $legitIDs[] = $intID;
-
-					}
-
-
-					if (count($legitIDs) > 0){
-
-						// actions:
-						switch ($actionstr){
-
-							// delete company
-							case 'delete':
-
-								// delete sub stuff?
-								$leaveOrphans = true; if (isset($_POST['leaveorphans']) && $_POST['leaveorphans'] != "1" && $_POST['leaveorphans'] != "true") $leaveOrphans = false;
-
-
-								// cycle through + delete (should have sanity checked via SWAL)
-								$deleted = 0;
-								foreach ($legitIDs as $id){
-
-									// delete all orphans
-									zeroBS_deleteCompany($id,$leaveOrphans);
-									$deleted++;
-
-								}
-
-								$passBack['deleted'] = $deleted;
-
-								#} Return
-								header('Content-Type: application/json'); 
-								echo json_encode($passBack);
-								exit();
-
-
-								break;
-
-							// add tag(s) to company(s)
-							case 'addtag':
-
-								// retrieve tag (array of id's)
-								$tagArr = zeroBSCRM_dataIO_postedArrayOfInts($_POST['tags']);
-								$cleanTags = array();
-								if (is_array($tagArr) && count($tagArr) > 0) foreach ($tagArr as $t){
-
-									$tInt = (int)$t;
-									if ($tInt > 0) $cleanTags[] = $tInt;
-
-								}
-
-								if (count($cleanTags) > 0){
-
-									// tags to add 
-
-										// cycle through + add tag
-										$tagged = 0;
+										// discern slave (should only ever be 2 id's)
 										foreach ($legitIDs as $id){
-
-											// pass as array of term ID's :)
-											// true here = append 
-											// https://codex.wordpress.org/Function_Reference/wp_set_post_terms
-											wp_set_post_terms($id,$cleanTags,'zerobscrm_companytag',true);
-
-											// no checks.?
-											$tagged++;
-
+											if ($id != $dominant) $slave = $id;
 										}
 
-										$passBack['tagged'] = $tagged;
+									}
 
-										#} Return
-										header('Content-Type: application/json'); 
-										echo json_encode($passBack);
-										exit();
+									if (!empty($dominant) && !empty($slave)){
 
-								} else {
+										$passBack['merged'] = zeroBSCRM_mergeCustomers($dominant,$slave);
 
-									// no tags
+									} else {
 
-								}
+										$passBack = false;
 
-								break;
+									}
 
-							// remove tag(S) from company(s)
-							case 'removetag':
-
-								// retrieve tag (array of id's)
-								$tagArr = zeroBSCRM_dataIO_postedArrayOfInts($_POST['tags']);
-								$cleanTags = array();
-								if (is_array($tagArr) && count($tagArr) > 0) foreach ($tagArr as $t){
-
-									$tInt = (int)$t;
-									if ($tInt > 0) $cleanTags[] = $tInt;
-
-								}
-
-								if (count($cleanTags) > 0){
-
-									// tags to add 
-
-										// cycle through + remove tags
-										$untagged = 0;
-										foreach ($legitIDs as $id){
-
-											// pass as array of term ID's :)
-											// https://codex.wordpress.org/Function_Reference/wp_remove_object_terms
-											wp_remove_object_terms($id,$cleanTags,'zerobscrm_companytag');
-
-											// no checks.?
-											$untagged++;
-
-										}
-
-										$passBack['untagged'] = $untagged;
-
-										#} Return
-										header('Content-Type: application/json'); 
-										echo json_encode($passBack);
-										exit();
-
-								} else {
-
-									// no tags
-
-								}
+									#} Return
+									header('Content-Type: application/json'); 
+									echo json_encode($passBack);
+									exit();
 
 
-								break;
+									break;
+
+							}
+
+
+						#} Return - will be an error if here, really!?!? should be passsing headers as such.
+						header('Content-Type: application/json'); 
+						echo json_encode($passBack);
+						exit();
+
+						break;
+
+
+
+					case 'company':
+
+						// check id's legit
+						$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
+
+							$intID = (int)$id;
+							if ($intID > 0) $legitIDs[] = $intID;
 
 						}
 
-					} else {
 
-						// NO IDS!
+						if (count($legitIDs) > 0){
 
-					}
+							// actions:
+							switch ($actionstr){
 
+								// delete company
+								case 'delete':
 
-					#} Return - will be an error if here, really!?!? should be passsing headers as such.
-					header('Content-Type: application/json'); 
-					echo json_encode($passBack);
-					exit();
-
-					break;
+									// delete sub stuff?
+									$leaveOrphans = true; if (isset($_POST['leaveorphans']) && $_POST['leaveorphans'] != "1" && $_POST['leaveorphans'] != "true") $leaveOrphans = false;
 
 
+									// cycle through + delete (should have sanity checked via SWAL)
+									$deleted = 0;
+									foreach ($legitIDs as $id){
+
+										// delete all orphans
+										zeroBS_deleteCompany($id,$leaveOrphans);
+										$deleted++;
+
+									}
+
+									$passBack['deleted'] = $deleted;
+
+									#} Return
+									header('Content-Type: application/json'); 
+									echo json_encode($passBack);
+									exit();
 
 
-				case 'quote':
+									break;
 
-					// check id's legit
-					$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
+								// add tag(s) to company(s)
+								case 'addtag':
+									
+									zeroBSCRM_bulkAction_enact_addTags($legitIDs,ZBS_TYPE_COMPANY,'zerobscrm_companytag');
 
-						$intID = (int)$id;
-						if ($intID > 0) $legitIDs[] = $intID;
+									break;
 
-					}
+								// remove tag(S) from company(s)
+								case 'removetag':
 
+									zeroBSCRM_bulkAction_enact_removeTags($legitIDs,ZBS_TYPE_COMPANY,'zerobscrm_companytag');
 
-					if (count($legitIDs) > 0){
+									break;
 
-						// actions:
-						switch ($actionstr){
+							}
 
-							// delete quote
-							case 'delete':
+						} else {
 
-								// cycle through + delete (should have sanity checked via SWAL)
-								$deleted = 0;
-								foreach ($legitIDs as $id){
-
-									// delete all orphans
-									if ($zbs->isDAL3())
-										$zbs->DAL->quotes->deleteQuote(array(
-								            'id'            => $id,
-								            'saveOrphans'   => true));
-									else
-										zeroBS_deleteGeneric($id);
-
-									$deleted++;
-
-								}
-
-								$passBack['deleted'] = $deleted;
-
-								#} Return
-								header('Content-Type: application/json'); 
-								echo json_encode($passBack);
-								exit();
-
-
-								break;
-
-							// mark accepted
-							case 'markaccepted':
-
-								// cycle through + mark
-								$accepted = 0;
-								foreach ($legitIDs as $id){
-
-					        		#} Update quote as accepted (should verify this worked...)
-					        		zeroBS_markQuoteAccepted($id,zeroBS_getCurrentUserUsername());
-
-									$accepted++;
-
-								}
-
-								$passBack['accepted'] = $accepted;
-
-								#} Return
-								header('Content-Type: application/json'); 
-								echo json_encode($passBack);
-								exit();
-
-
-								break;
-
-							// mark unaccepted
-							case 'markunaccepted':
-
-								// cycle through + mark
-								$unaccepted = 0;
-								foreach ($legitIDs as $id){
-
-					        		#} Update quote as unaccepted (should verify this worked...)
-					        		zeroBS_markQuoteUnAccepted($id,zeroBS_getCurrentUserUsername());
-
-									$unaccepted++;
-
-								}
-
-								$passBack['unaccepted'] = $unaccepted;
-
-								#} Return
-								header('Content-Type: application/json'); 
-								echo json_encode($passBack);
-								exit();
-
-
-								break;
+							// NO IDS!
 
 						}
 
-					} else {
 
-						// NO IDS!
+						#} Return - will be an error if here, really!?!? should be passsing headers as such.
+						header('Content-Type: application/json'); 
+						echo json_encode($passBack);
+						exit();
 
-					}
-
-
-					#} Return - will be an error if here, really!?!? should be passsing headers as such.
-					header('Content-Type: application/json'); 
-					echo json_encode($passBack);
-					exit();
-
-					break;
+						break;
 
 
-				case 'invoice':
-
-					// check id's legit
-					$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
-
-						$intID = (int)$id;
-						if ($intID > 0) $legitIDs[] = $intID;
-
-					}
 
 
-					if (count($legitIDs) > 0){
+					case 'quote':
 
-						// actions:
-						switch ($actionstr){
+						// check id's legit
+						$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
 
-							// delete quote
-							case 'delete':
+							$intID = (int)$id;
+							if ($intID > 0) $legitIDs[] = $intID;
 
-								// cycle through + delete (should have sanity checked via SWAL)
-								$deleted = 0;
-								foreach ($legitIDs as $id){
-
-									// delete all orphans
-									if ($zbs->isDAL3())
-										$zbs->DAL->invoices->deleteInvoice(array(
-								            'id'            => $id,
-								            'saveOrphans'   => true));
-									else
-										zeroBS_deleteGeneric($id);
-
-									$deleted++;
-
-								}
-
-								$passBack['deleted'] = $deleted;
-
-								#} Return
-								header('Content-Type: application/json'); 
-								echo json_encode($passBack);
-								exit();
+						}
 
 
-								break;
+						if (count($legitIDs) > 0){
 
-							// change status
-							case 'changestatus':
+							// actions:
+							switch ($actionstr){
 
-								$accepted = 0;
+								// delete quote
+								case 'delete':
 
-								// legit status?
-								$statusStr = sanitize_text_field($_POST['newstatus']);
-								if (in_array($statusStr, array('Draft','Unpaid','Paid','Overdue'))){
+									// cycle through + delete (should have sanity checked via SWAL)
+									$deleted = 0;
+									foreach ($legitIDs as $id){
+
+										// delete all orphans
+										if ($zbs->isDAL3())
+											$zbs->DAL->quotes->deleteQuote(array(
+									            'id'            => $id,
+									            'saveOrphans'   => true));
+										else
+											zeroBS_deleteGeneric($id);
+
+										$deleted++;
+
+									}
+
+									$passBack['deleted'] = $deleted;
+
+									#} Return
+									header('Content-Type: application/json'); 
+									echo json_encode($passBack);
+									exit();
+
+
+									break;
+
+								// mark accepted
+								case 'markaccepted':
 
 									// cycle through + mark
+									$accepted = 0;
 									foreach ($legitIDs as $id){
-										
+
 						        		#} Update quote as accepted (should verify this worked...)
-						        		zeroBS_updateInvoiceStatus($id,$statusStr);
+						        		zeroBS_markQuoteAccepted($id,zeroBS_getCurrentUserUsername());
 
 										$accepted++;
 
 									}
 
-								}
+									$passBack['accepted'] = $accepted;
 
-								$passBack['accepted'] = $accepted;
-
-								#} Return
-								header('Content-Type: application/json'); 
-								echo json_encode($passBack);
-								exit();
+									#} Return
+									header('Content-Type: application/json'); 
+									echo json_encode($passBack);
+									exit();
 
 
-								break;
+									break;
 
+								// mark unaccepted
+								case 'markunaccepted':
+
+									// cycle through + mark
+									$unaccepted = 0;
+									foreach ($legitIDs as $id){
+
+						        		#} Update quote as unaccepted (should verify this worked...)
+						        		zeroBS_markQuoteUnAccepted($id,zeroBS_getCurrentUserUsername());
+
+										$unaccepted++;
+
+									}
+
+									$passBack['unaccepted'] = $unaccepted;
+
+									#} Return
+									header('Content-Type: application/json'); 
+									echo json_encode($passBack);
+									exit();
+
+
+									break;
+
+								// add tag(s) to quote(s)
+								case 'addtag':
+									
+									zeroBSCRM_bulkAction_enact_addTags($legitIDs,ZBS_TYPE_QUOTE,'zerobscrm_quotetag');
+
+									break;
+
+								// remove tag(S) from quote(s)
+								case 'removetag':
+
+									zeroBSCRM_bulkAction_enact_removeTags($legitIDs,ZBS_TYPE_QUOTE,'zerobscrm_quotetag');
+
+									break;
+
+							}
+
+						} else {
+
+							// NO IDS!
 
 						}
 
-					} else {
 
-						// NO IDS!
+						#} Return - will be an error if here, really!?!? should be passsing headers as such.
+						header('Content-Type: application/json'); 
+						echo json_encode($passBack);
+						exit();
 
-					}
-
-
-					#} Return - will be an error if here, really!?!? should be passsing headers as such.
-					header('Content-Type: application/json'); 
-					echo json_encode($passBack);
-					exit();
-
-					break;
-
-				case 'transaction':
-
-					// check id's legit
-					$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
-
-						$intID = (int)$id;
-						if ($intID > 0) $legitIDs[] = $intID;
-
-					}
+						break;
 
 
-					if (count($legitIDs) > 0){
+					case 'invoice':
 
-						// actions:
-						switch ($actionstr){
+						// check id's legit
+						$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
 
-							// delete transaction(s)
-							case 'delete':
+							$intID = (int)$id;
+							if ($intID > 0) $legitIDs[] = $intID;
 
-								// cycle through + delete (should have sanity checked via SWAL)
-								$deleted = 0;
-								foreach ($legitIDs as $id){
-
-									// delete all orphans
-									if ($zbs->isDAL3())
-										$zbs->DAL->transactions->deleteTransaction(array(
-								            'id'            => $id,
-								            'saveOrphans'   => true));
-									else
-										zeroBS_deleteGeneric($id);
-
-									$deleted++;
-
-								}
-
-								$passBack['deleted'] = $deleted;
-
-								#} Return
-								header('Content-Type: application/json'); 
-								echo json_encode($passBack);
-								exit();
+						}
 
 
-								break;
+						if (count($legitIDs) > 0){
 
-							// add tag(s) to transaction(s)
-							case 'addtag':
+							// actions:
+							switch ($actionstr){
 
-								// retrieve tag (array of id's)
-								$tagArr = zeroBSCRM_dataIO_postedArrayOfInts($_POST['tags']);
-								$cleanTags = array();
-								if (is_array($tagArr) && count($tagArr) > 0) foreach ($tagArr as $t){
+								// delete quote
+								case 'delete':
 
-									$tInt = (int)$t;
-									if ($tInt > 0) $cleanTags[] = $tInt;
+									// cycle through + delete (should have sanity checked via SWAL)
+									$deleted = 0;
+									foreach ($legitIDs as $id){
 
-								}
+										// delete all orphans
+										if ($zbs->isDAL3())
+											$zbs->DAL->invoices->deleteInvoice(array(
+									            'id'            => $id,
+									            'saveOrphans'   => true));
+										else
+											zeroBS_deleteGeneric($id);
 
-								if (count($cleanTags) > 0){
+										$deleted++;
 
-									// tags to add 
+									}
 
-										// cycle through + add tag
-										$tagged = 0;
+									$passBack['deleted'] = $deleted;
+
+									#} Return
+									header('Content-Type: application/json'); 
+									echo json_encode($passBack);
+									exit();
+
+
+									break;
+
+								// change status
+								case 'changestatus':
+
+									$accepted = 0;
+
+									// legit status?
+									$statusStr = sanitize_text_field($_POST['newstatus']);
+									if (in_array($statusStr, array('Draft','Unpaid','Paid','Overdue'))){
+
+										// cycle through + mark
 										foreach ($legitIDs as $id){
+											
+							        		#} Update quote as accepted (should verify this worked...)
+							        		zeroBS_updateInvoiceStatus($id,$statusStr);
 
-											// pass as array of term ID's :)
-											// true here = append 
-											// https://codex.wordpress.org/Function_Reference/wp_set_post_terms
-											wp_set_post_terms($id,$cleanTags,'zerobscrm_transactiontag',true);
-
-											// no checks.?
-											$tagged++;
+											$accepted++;
 
 										}
 
-										$passBack['tagged'] = $tagged;
+									}
 
-										#} Return
-										header('Content-Type: application/json'); 
-										echo json_encode($passBack);
-										exit();
+									$passBack['accepted'] = $accepted;
 
-								} else {
-
-									// no tags
-
-								}
-
-								break;
-
-							// remove tag(S) from transaction(s)
-							case 'removetag':
-
-								// retrieve tag (array of id's)
-								$tagArr = zeroBSCRM_dataIO_postedArrayOfInts($_POST['tags']);
-								$cleanTags = array();
-								if (is_array($tagArr) && count($tagArr) > 0) foreach ($tagArr as $t){
-
-									$tInt = (int)$t;
-									if ($tInt > 0) $cleanTags[] = $tInt;
-
-								}
-
-								if (count($cleanTags) > 0){
-
-									// tags to add 
-
-										// cycle through + remove tags
-										$untagged = 0;
-										foreach ($legitIDs as $id){
-
-											// pass as array of term ID's :)
-											// https://codex.wordpress.org/Function_Reference/wp_remove_object_terms
-											wp_remove_object_terms($id,$cleanTags,'zerobscrm_transactiontag');
-
-											// no checks.?
-											$untagged++;
-
-										}
-
-										$passBack['untagged'] = $untagged;
-
-										#} Return
-										header('Content-Type: application/json'); 
-										echo json_encode($passBack);
-										exit();
-
-								} else {
-
-									// no tags
-
-								}
+									#} Return
+									header('Content-Type: application/json'); 
+									echo json_encode($passBack);
+									exit();
 
 
-								break;
+									break;
 
+								// add tag(s) to invoice(s)
+								case 'addtag':
+									
+									zeroBSCRM_bulkAction_enact_addTags($legitIDs,ZBS_TYPE_INVOICE,'zerobscrm_invoicetag');
+
+									break;
+
+								// remove tag(S) from invoice(s)
+								case 'removetag':
+
+									zeroBSCRM_bulkAction_enact_removeTags($legitIDs,ZBS_TYPE_INVOICE,'zerobscrm_invoicetag');
+
+									break;
+
+
+							}
+
+						} else {
+
+							// NO IDS!
 
 						}
 
-					} else {
 
-						// NO IDS!
+						#} Return - will be an error if here, really!?!? should be passsing headers as such.
+						header('Content-Type: application/json'); 
+						echo json_encode($passBack);
+						exit();
 
-					}
+						break;
 
+					case 'transaction':
 
-					#} Return - will be an error if here, really!?!? should be passsing headers as such.
-					header('Content-Type: application/json'); 
-					echo json_encode($passBack);
-					exit();
+						// check id's legit
+						$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
 
-					break;
-				
-				case 'form':
-
-					// check id's legit
-					$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
-
-						$intID = (int)$id;
-						if ($intID > 0) $legitIDs[] = $intID;
-
-					}
-
-
-					if (count($legitIDs) > 0){
-
-						// actions:
-						switch ($actionstr){
-
-							// delete quote
-							case 'delete':
-
-								// cycle through + delete (should have sanity checked via SWAL)
-								$deleted = 0;
-								foreach ($legitIDs as $id){
-
-									// delete all orphans
-									if ($zbs->isDAL3())
-										$zbs->DAL->forms->deleteForm(array(
-								            'id'            => $id,
-								            'saveOrphans'   => true));
-									else
-										zeroBS_deleteGeneric($id);
-
-									$deleted++;
-
-								}
-
-								$passBack['deleted'] = $deleted;
-
-								#} Return
-								header('Content-Type: application/json'); 
-								echo json_encode($passBack);
-								exit();
-
-
-								break;
-
+							$intID = (int)$id;
+							if ($intID > 0) $legitIDs[] = $intID;
 
 						}
 
-					} else {
 
-						// NO IDS!
+						if (count($legitIDs) > 0){
 
-					}
+							// actions:
+							switch ($actionstr){
 
+								// delete transaction(s)
+								case 'delete':
 
-					#} Return - will be an error if here, really!?!? should be passsing headers as such.
-					header('Content-Type: application/json'); 
-					echo json_encode($passBack);
-					exit();
+									// cycle through + delete (should have sanity checked via SWAL)
+									$deleted = 0;
+									foreach ($legitIDs as $id){
 
-					break;
+										// delete all orphans
+										if ($zbs->isDAL3())
+											$zbs->DAL->transactions->deleteTransaction(array(
+									            'id'            => $id,
+									            'saveOrphans'   => true));
+										else
+											zeroBS_deleteGeneric($id);
 
+										$deleted++;
 
-				case 'segment':
+									}
 
-					// check id's legit
-					$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
+									$passBack['deleted'] = $deleted;
 
-						$intID = (int)$id;
-						if ($intID > 0) $legitIDs[] = $intID;
-
-					}
-
-
-					if (count($legitIDs) > 0){
-
-						// actions:
-						switch ($actionstr){
-
-							// delete segments
-							case 'delete':
-
-								// cycle through + delete (should have sanity checked via SWAL)
-								$deleted = 0;
-								foreach ($legitIDs as $id){
-
-									// delete
-									$zbs->DAL->segments->deleteSegment(array('id'=>$id));
-									$deleted++;
-
-								}
-
-								$passBack['deleted'] = $deleted;
-
-								#} Return
-								header('Content-Type: application/json'); 
-								echo json_encode($passBack);
-								exit();
+									#} Return
+									header('Content-Type: application/json'); 
+									echo json_encode($passBack);
+									exit();
 
 
-								break;
+									break;
+
+								// add tag(s) to transaction(s)
+								case 'addtag':
+									
+									zeroBSCRM_bulkAction_enact_addTags($legitIDs,ZBS_TYPE_TRANSACTION,'zerobscrm_transactiontag');
+
+									break;
+
+								// remove tag(S) from transaction(s)
+								case 'removetag':
+
+									zeroBSCRM_bulkAction_enact_removeTags($legitIDs,ZBS_TYPE_TRANSACTION,'zerobscrm_transactiontag');
+
+									break;
+
+
+							}
+
+						} else {
+
+							// NO IDS!
 
 						}
 
-					} else {
 
-						// NO IDS!
+						#} Return - will be an error if here, really!?!? should be passsing headers as such.
+						header('Content-Type: application/json'); 
+						echo json_encode($passBack);
+						exit();
 
-					}
+						break;
+					
+					case 'form':
+
+						// check id's legit
+						$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
+
+							$intID = (int)$id;
+							if ($intID > 0) $legitIDs[] = $intID;
+
+						}
 
 
-					#} Return - will be an error if here, really!?!? should be passsing headers as such.
-					header('Content-Type: application/json'); 
-					echo json_encode($passBack);
-					exit();
+						if (count($legitIDs) > 0){
 
-					break;
+							// actions:
+							switch ($actionstr){
 
-				default: 
+								// delete quote
+								case 'delete':
 
-					// err really :o
-					header('Content-Type: application/json'); 
-					exit('[]');
+									// cycle through + delete (should have sanity checked via SWAL)
+									$deleted = 0;
+									foreach ($legitIDs as $id){
 
-					break;
+										// delete all orphans
+										if ($zbs->isDAL3())
+											$zbs->DAL->forms->deleteForm(array(
+									            'id'            => $id,
+									            'saveOrphans'   => true));
+										else
+											zeroBS_deleteGeneric($id);
+
+										$deleted++;
+
+									}
+
+									$passBack['deleted'] = $deleted;
+
+									#} Return
+									header('Content-Type: application/json'); 
+									echo json_encode($passBack);
+									exit();
+
+
+									break;
+
+
+							}
+
+						} else {
+
+							// NO IDS!
+
+						}
+
+
+						#} Return - will be an error if here, really!?!? should be passsing headers as such.
+						header('Content-Type: application/json'); 
+						echo json_encode($passBack);
+						exit();
+
+						break;
+
+
+					case 'segment':
+
+						// check id's legit
+						$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
+
+							$intID = (int)$id;
+							if ($intID > 0) $legitIDs[] = $intID;
+
+						}
+
+
+						if (count($legitIDs) > 0){
+
+							// actions:
+							switch ($actionstr){
+
+								// delete segments
+								case 'delete':
+
+									// cycle through + delete (should have sanity checked via SWAL)
+									$deleted = 0;
+									foreach ($legitIDs as $id){
+
+										// delete
+										$zbs->DAL->segments->deleteSegment(array('id'=>$id));
+										$deleted++;
+
+									}
+
+									$passBack['deleted'] = $deleted;
+
+									#} Return
+									header('Content-Type: application/json'); 
+									echo json_encode($passBack);
+									exit();
+
+
+									break;
+
+							}
+
+						} else {
+
+							// NO IDS!
+
+						}
+
+
+						#} Return - will be an error if here, really!?!? should be passsing headers as such.
+						header('Content-Type: application/json'); 
+						echo json_encode($passBack);
+						exit();
+
+						break;
+					
+					case 'quotetemplate':
+
+						// check id's legit
+						$legitIDs = array(); if (is_array($idsToChange) && count($idsToChange) > 0) foreach ($idsToChange as $id){
+
+							$intID = (int)$id;
+							if ($intID > 0) $legitIDs[] = $intID;
+
+						}
+
+
+						if (count($legitIDs) > 0){
+
+							// actions:
+							switch ($actionstr){
+
+								// delete segments
+								case 'delete':
+
+									// cycle through + delete (should have sanity checked via SWAL)
+									$deleted = 0;
+									foreach ($legitIDs as $id){
+
+										// delete
+										$zbs->DAL->quotetemplates->deleteQuotetemplate(array('id'=>$id));
+										$deleted++;
+
+									}
+
+									$passBack['deleted'] = $deleted;
+
+									#} Return
+									header('Content-Type: application/json'); 
+									echo json_encode($passBack);
+									exit();
+
+
+									break;
+
+							}
+
+						} else {
+
+							// NO IDS!
+
+						}
+
+
+						#} Return - will be an error if here, really!?!? should be passsing headers as such.
+						header('Content-Type: application/json'); 
+						echo json_encode($passBack);
+						exit();
+
+						break;
+
+					default: 
+
+						// err really :o
+						header('Content-Type: application/json'); 
+						exit('[]');
+
+						break;
+
+				}
+
+			} else {
+
+				// NO IDS!
 
 			}
 
 
 		exit();
+
+	}
+
+
+	/**
+	 * Adds tags to any object (for bulk action AJAX requests called in zeroBSCRM_AJAX_enactListViewBulkAction())
+	 *
+	 * @param array objIDs      	Array of object id (int)s
+	 * @param int objTypeInt  		ZBS_TYPE (if DAL3) or -1 (if <DAL3)
+	 * @param string objTaxonomy   	wp taxonomy (if <DAL3) or '' (if DAL3)
+	 *
+	 * @return json success/error
+	 */
+	function zeroBSCRM_bulkAction_enact_addTags($objIDs=array(),$objTypeInt=-1,$objTaxonomy=''){
+			
+			global $zbs;
+			
+			// return
+			$passBack = array();
+
+			// retrieve tag (array of id's)
+			$tagArr = zeroBSCRM_dataIO_postedArrayOfInts($_POST['tags']);
+			$tagIDs = array();
+			if (is_array($tagArr) && count($tagArr) > 0) foreach ($tagArr as $t){
+
+				$tInt = (int)$t;
+				if ($tInt > 0) $tagIDs[] = $tInt;
+
+			}
+
+			if (count($tagIDs) > 0){
+
+				// tags to add 
+
+					// cycle through + add tag
+					$tagged = 0;
+					foreach ($objIDs as $id){
+
+						// pass as array of term ID's :)
+						if ($zbs->isDAL3()){
+							
+							// DAL3
+							$zbs->DAL->addUpdateObjectTags(array(
+									'objid' 		=> $id,
+									'objtype' 		=> $objTypeInt,
+									'tagIDs'		=> $tagIDs,
+									'mode'			=> 'append'
+							));
+							
+						} else {
+
+							// DAL2<=
+							zeroBSCRM_DAL2_set_post_terms($id,$tagIDs,$objTaxonomy,true);
+
+						}
+
+						// no checks.?
+						$tagged++;
+
+					}
+
+					$passBack['tagged'] = $tagged;
+
+					#} Return
+					zeroBSCRM_sendJSONSuccess($passBack);
+					exit();
+
+			} else {
+
+				// no tags
+
+			}
+
+		// err
+		zeroBSCRM_sendJSONError(-1);
+		exit();
+
+	}
+
+
+	/**
+	 * Remove tags from any object (for bulk action AJAX requests called in zeroBSCRM_AJAX_enactListViewBulkAction())
+	 *
+	 * @param array objIDs      	Array of object id (int)s
+	 * @param int objTypeInt  		ZBS_TYPE (if DAL3) or -1 (if <DAL3)
+	 * @param string objTaxonomy   	wp taxonomy (if <DAL3) or '' (if DAL3)
+	 *
+	 * @return json success/error
+	 */
+	function zeroBSCRM_bulkAction_enact_removeTags($objIDs=array(),$objTypeInt=-1,$objTaxonomy=''){
+			
+			global $zbs;
+			
+			// return
+			$passBack = array();
+
+			// retrieve tag (array of id's)
+			$tagArr = zeroBSCRM_dataIO_postedArrayOfInts($_POST['tags']);
+			$tagIDs = array();
+			if (is_array($tagArr) && count($tagArr) > 0) foreach ($tagArr as $t){
+
+				$tInt = (int)$t;
+				if ($tInt > 0) $tagIDs[] = $tInt;
+
+			}
+
+			if (count($tagIDs) > 0){
+
+				// tags to add 
+
+					// cycle through + remove tags
+					$untagged = 0;
+					foreach ($objIDs as $id){
+
+						// pass as array of term ID's :)
+						// https://codex.wordpress.org/Function_Reference/wp_remove_object_terms
+						if ($zbs->isDAL3())
+							$zbs->DAL->addUpdateObjectTags(array(
+									'objid' 		=> $id,
+									'objtype' 		=> $objTypeInt,
+									'tagIDs'		=> $tagIDs,
+									'mode' 			=> 'remove'
+							));
+						else
+							zeroBSCRM_DAL2_remove_object_terms($id,$tagIDs,$objTaxonomy);
+
+						// no checks.?
+						$untagged++;
+
+					}
+
+					$passBack['untagged'] = $untagged;
+
+					#} Return
+					zeroBSCRM_sendJSONSuccess($passBack);
+					exit();
+        
+			} else {
+
+				// no tags
+
+			}
+
+		// err
+		zeroBSCRM_sendJSONError(-1);
+		exit();
+
 
 	}
 

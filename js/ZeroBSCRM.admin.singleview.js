@@ -136,9 +136,8 @@ function zeroBSCRMJS_viewContactInit(){
 
         // init tabs
         //jQuery('.tabular.menu .item').tab();
-        jQuery('#zbs-vital-menu .tabular.menu .item').tab({
-            //context: jQuery('#zbs-vital-menu')
-            context: '#zbs-vital-menu'
+        jQuery('#zbs-vitals-box .tabular.menu .item').tab({
+            context: '#zbs-vitals-box'
             //childrenOnly: true
         });
         jQuery('#zbs-doc-menu .tabular.menu .item').tab({
@@ -202,9 +201,8 @@ function zeroBSCRMJS_viewCompanyInit(){
 
         // init tabs
         //jQuery('.tabular.menu .item').tab();
-        jQuery('#zbs-vital-menu .tabular.menu .item').tab({
-            //context: jQuery('#zbs-vital-menu')
-            context: '#zbs-vital-menu'
+        jQuery('#zbs-vitals-box .tabular.menu .item').tab({
+            context: '#zbs-vitals-box'
             //childrenOnly: true
         });
         jQuery('#zbs-doc-menu .tabular.menu .item').tab({

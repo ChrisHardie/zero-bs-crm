@@ -2,20 +2,53 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zero BS CRM\n"
 "POT-Creation-Date: 2017-08-17 16:46+0100\n"
-"PO-Revision-Date: 2018-04-12 15:42+0100\n"
+"PO-Revision-Date: 2020-02-26 12:37+0000\n"
 "Last-Translator: Zero BS CRM.com\n"
 "Language-Team: ZeroBSCRM.com\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.3\n"
+"X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __w;_we;_wx\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: lang\n"
+
+#. Placeholders to be localised:
+#. ZeroBSCRM.DAL3.Obj.Contacts.php*
+msgid "e.g. john@gmail.com"
+msgstr ""
+
+msgid "e.g. John"
+msgstr ""
+
+msgid "e.g. Doe"
+msgstr ""
+
+msgid "e.g. New York"
+msgstr "e.g. London"
+
+msgid "e.g. Kings County"
+msgstr "e.g. Greater London"
+
+msgid "e.g. 10019"
+msgstr "e.g. E1 3RZ"
+
+msgid "e.g. Los Angeles"
+msgstr "e.g. Manchester"
+
+msgid "e.g. 90001"
+msgstr "e.g. M1 3RZ"
+
+msgid "e.g. 877 2733049"
+msgstr "e.g. 01234 567891"
+
+#. Mobile equivilent
+msgid "e.g. 877 2733050"
+msgstr "e.g. 07980 123456"
 
 #: includes/ZeroBSCRM.AJAX.php:765
 msgid "Proposal Accepted"

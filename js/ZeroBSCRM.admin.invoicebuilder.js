@@ -1304,7 +1304,7 @@ function zbscrm_JS_bind_change_actions(){
 
 	jQuery('#invoice_postage_total').change(function(){
 		
-		jQuery('#pandptotal').html(window.zbJS_curr+parseFloat(jQuery(this).val()).toFixed(2));
+		jQuery('#pandptotal').html(window.zbs_root.currencyOptions.currencyStr+parseFloat(jQuery(this).val()).toFixed(2));
 		// recalc
 		zbscrm_JS_calcTotals();
 

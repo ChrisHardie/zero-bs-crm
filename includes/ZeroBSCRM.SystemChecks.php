@@ -30,7 +30,7 @@
 	function zeroBSCRM_checkSystemFeat($key='',$withInfo=false){
 
 
-		$featList = array('zlib','dompdf','pdffonts','curl','autodraftgarbagecollect','phpver','locale','assetdir','executiontime','memorylimit','postmaxsize','uploadmaxfilesize','wpuploadmaxfilesize','dbver','dalver','corever','local','localtime','serverdefaulttime','sqlrights','devmode','permalinks','mysql');
+		$featList = array('zlib','dompdf','pdffonts','curl','autodraftgarbagecollect','phpver','locale','assetdir','executiontime','memorylimit','postmaxsize','uploadmaxfilesize','wpuploadmaxfilesize','dbver','dalver','corever','local','localtime','serverdefaulttime','sqlrights','devmode','permalinks','mysql','innodb');
 
 		if (in_array($key,$featList) && function_exists("zeroBSCRM_checkSystemFeat_".$key)) return call_user_func_array("zeroBSCRM_checkSystemFeat_".$key,array($withInfo));
 
@@ -225,18 +225,23 @@
 	// what mysql we running
 	function zeroBSCRM_checkSystemFeat_mysql($withInfo=false){
 
-		global $wpdb;
-		 
-
 		if (!$withInfo)
 			return zeroBSCRM_database_getVersion();
-		else {
-
-			global $zbs;
-
+		else
 			return array(1, zeroBSCRM_database_getVersion());
-			
+
+	}
+
+	// got InnoDB?
+	function zeroBSCRM_checkSystemFeat_innodb($withInfo=false){
+
+		if (!$withInfo)
+			return zeroBSCRM_DB_canInnoDB() ? __('Available','zero-bs-crm') :  __('Not Available','zero-bs-crm');
+		else {
+			$innoDB = zeroBSCRM_DB_canInnoDB();
+			return array($innoDB, ($innoDB ? __('Available','zero-bs-crm') :  __('Not Available','zero-bs-crm')));			
 		}
+
 	}
 
 
@@ -410,19 +415,23 @@ function zeroBSCRM_checkPrettyPermalinks(){
 	}
 	function zeroBSCRM_checkSystemFeat_dompdf($withInfo=false){
 
+		global $zbs; 
+
+		// retrieve info
+		$libInfo = $zbs->lib('dompdf');
 
 		if (!$withInfo)
-			return file_exists(ZEROBSCRM_PATH.'includes/lib/dompdf-0-8-2/autoload.inc.php');
+			return is_array($libInfo);
 		else {
 
-			$enabled = file_exists(ZEROBSCRM_PATH.'includes/lib/dompdf-0-8-2/autoload.inc.php');
+			$enabled = file_exists($libInfo['include']);
 			$str = 'PDF Engine is properly installed on your server.';
+			if (isset($libInfo['version'])) $str .= ' (Version '.$libInfo['version'].')';
 			if (!$enabled) $str = 'PDF Engine is not installed on your server.';
 
 			return array($enabled,$str);
 
 		}
-
 
 	}
 	function zeroBSCRM_checkSystemFeat_pdffonts($withInfo=false){
