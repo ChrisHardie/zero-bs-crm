@@ -21,6 +21,40 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
+
+#. Placeholders to be localised:
+#: ZeroBSCRM.DAL3.Obj.Contacts.php*
+msgid "e.g. john@gmail.com"
+msgstr ""
+
+msgid "e.g. John"
+msgstr ""
+
+msgid "e.g. Doe"
+msgstr ""
+
+msgid "e.g. New York"
+msgstr ""
+
+msgid "e.g. Kings County"
+msgstr ""
+
+msgid "e.g. 10019"
+msgstr ""
+
+msgid "e.g. Los Angeles"
+msgstr ""
+
+msgid "e.g. 90001"
+msgstr ""
+
+msgid "e.g. 877 2733049"
+msgstr ""
+
+#. Mobile equivilent
+msgid "e.g. 877 2733050"
+msgstr ""
+
 #: api/endpoints/create_company.php:90 api/endpoints/create_customer.php:95
 msgid "Updated by API Action"
 msgstr "Aggiornata da azione API"

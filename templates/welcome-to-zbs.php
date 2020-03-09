@@ -276,22 +276,13 @@
                 <h3 id="zbs-lead-header"><span class="zbs-nob2b-show"><?php _e('Getting Customers into ZBS',"zero-bs-crm"); ?></span><span class="zbs-b2b-show"><?php _e('Getting Contacts into ZBS',"zero-bs-crm"); ?></span></h3>
 
                 <p class="lead zbs-freelancer-lead">
-                    <strong><?php _e("Freelancing is hard enough without having to manage a customer list as well!","zero-bs-crm");?></strong><br />
-                    <?php _e("We freelanced for years before we started ZBS, so we feel your pain","zero-bs-crm");?>.<br /><br />
-                    <?php _e("To make life easier we've built PayPal Sync, which automatically pulls through all of your customers who've ever paid via PayPal into your CRM. 
-                    If you're using PayPal for payments, this is a HUGE timesaver vs having to manage in PayPal","zero-bs-crm");?>.
+                    <?php _e("<strong>Freelancing is hard enough without having to manage a customer list as well!</strong><br />We freelanced for years before we started ZBS, so we feel your pain.<br /><br />To make life easier we've built PayPal Sync, which automatically pulls through all of your customers who've ever paid via PayPal into your CRM. If you're using PayPal for payments, this is a HUGE timesaver vs having to manage in PayPal.","zero-bs-crm"); ?>
                 </p>
                 <p class="lead zbs-smallbiz-lead">
-                    <strong><?php _e("Running a small business is hard work...","zero-bs-crm");?></strong><br />
-                    <?php _e("It's busy. Time passes and you forget to add a customer detail...","zero-bs-crm");?> <em><?php _e("Then when you need it, it's not there!","zero-bs-crm");?></em>.<?php _e("We've run businesses for years,","zero-bs-crm");?> <strong><?php _e("we feel your pain","zero-bs-crm");?></strong>.<br /><br />
-                    <?php _e("To make life easier we've built a few extensions which take a lot of the pain out of this. PayPal Sync &amp; Woo Sync automatically pull through all customers into your CRM.  
-                    If you're using PayPal for payments, or WooCommerce for sales, this is a HUGE timesaver when combined with ZeroBS CRM.","zero-bs-crm");?>
+                    <?php _e("<strong>Running a small business is hard work...</strong><br />It's busy. Time passes and you forget to add a customer detail... <em>Then when you need it, it's not there!</em>. We've run businesses for years,<strong>we feel your pain</strong>.<br /><br />To make life easier we've built a few extensions which take a lot of the pain out of this. PayPal Sync &amp; Woo Sync automatically pull through all customers into your CRM. If you're using PayPal for payments, or WooCommerce for sales, this is a HUGE timesaver when combined with ZeroBS CRM.","zero-bs-crm"); ?>
                 </p>
                 <p class="lead zbs-ecomm-lead">
-                    <strong><?php _e("Running an ecommerce business is hard work...","zero-bs-crm");?></strong><br />
-                    <?php _e("We've tried our hands at eCommerce (with some success, and a chunk of fail), so we feel your pain.","zero-bs-crm");?><br /><br />
-                    <?php _e("To make life easier we've built a few extensions which take a lot of the pain out of this. PayPal sync &amp; WooSync automatically pull through all customers and transactions, and then it keeps their details up to date. 
-                    If you're using PayPal for payments, or WooCommerce for sales, this is a HUGE timesaver when combined with ZeroBS CRM.","zero-bs-crm");?>
+                    <?php _e("<strong>Running an ecommerce business is hard work...</strong><br />We've tried our hands at eCommerce (with some success, and a chunk of fail), so we feel your pain.<br /><br />To make life easier we've built a few extensions which take a lot of the pain out of this. PayPal sync &amp; WooSync automatically pull through all customers and transactions, and then it keeps their details up to date. If you're using PayPal for payments, or WooCommerce for sales, this is a HUGE timesaver when combined with ZeroBS CRM.","zero-bs-crm");?>
                 </p>
 
                 <div class="zbs-sync-ext">

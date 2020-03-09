@@ -158,8 +158,8 @@
 // this corrects a glitch in labels + checkboxes
 .zbs-select-tag.ui.label {
 
-	// except this, this just margins next tag
-	margin-right: 0.6em;
+    margin-right: 0.5em;
+    margin-bottom: 0.4em;
 
 	.ui.checkbox {
 

@@ -3,7 +3,7 @@
 Plugin Name: Zero BS CRM
 Plugin URI: https://zerobscrm.com
 Description: Zero BS CRM is the simplest CRM for WordPress. Self host your own Customer Relationship Manager using WP.
-Version: 3.0.11
+Version: 3.0.12
 Author: Zero BS CRM
 
 Author URI: https://zerobscrm.com

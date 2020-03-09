@@ -72,29 +72,18 @@ function zeroBSCRM_render_customerslist_page(){
 
                 // bulk actions - contact deleting
                 'andthese' => __('Shall I also delete the associated Invoices, Quotes, Transactions and Events?',"zero-bs-crm"),
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'noleave' => __('No, leave them',"zero-bs-crm"),
-                'yesthose' => __('Yes, remove everything',"zero-bs-crm"),
-                'deleted' => __('Deleted',"zero-bs-crm"),
                 'contactsdeleted' => __('Your contact(s) have been deleted.',"zero-bs-crm"),
-                'notdeleted' => __('Could not delete!',"zero-bs-crm"),
                 'notcontactsdeleted' => __('Your contact(s) could not be deleted.',"zero-bs-crm"),
 
                 // bulk actions - add/remove tags
-                'whichtags' => __('Which Tag(s)?',"zero-bs-crm"),
-                'whichtagsadd' => __('Which Tag(s) would you like to add?',"zero-bs-crm"),
-                'whichtagsremove' => __('Which Tag(s) would you like to remove?',"zero-bs-crm"),
+                'notags' => __('You do not have any tags, do you want to',"zero-bs-crm").' <a target="_blank" href="'.zbsLink('tags',-1,'zerobs_customer',false,'contact').'">'.__('Add a tag',"zero-bs-crm").'</a>',                
                 
-                'notags' => __('You do not have any tags, do you want to',"zero-bs-crm").' <a target="_blank" href="'.admin_url('admin.php?page='.$zbs->slugs['tagmanager'].'&tagtype=contact').'">'.__('Add some',"zero-bs-crm").'</a>',
-
                 // bulk actions - merge 2 records
                 'areyousurethesemerge' => __('Are you sure you want to merge these two contacts into one record, there is no "undo" here.',"zero-bs-crm").'<br />',
                 'whichdominant' => __('Which is the "master" record (main record)?',"zero-bs-crm"),
-                'merged' => __('Merged',"zero-bs-crm"),
+
                 'contactsmerged' => __('Contacts Merged',"zero-bs-crm"),
-                'notmerged' => __('Not Merged',"zero-bs-crm"),
                 'contactsnotmerged' => __('Contacts could not be successfully merged',"zero-bs-crm"),
-                'yesmerge' => __('Yes, merge them',"zero-bs-crm"),
 
                 // tel
                 'telhome' => __('Home',"zero-bs-crm"),
@@ -143,40 +132,13 @@ function zeroBSCRM_render_companyslist_page(){
                 'removetags' => __('Remove tag(s)',"zero-bs-crm"),
                 'export' => __('Export',"zero-bs-crm"),
 
-
                 // bulk actions - company deleting
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'areyousurethese' => __('Are you sure you want to delete these?',"zero-bs-crm"),
-                'andthese' => __('Shall I also delete the associated Contacts, Invoices, Quotes, Transactions and Events? (This cannot be undone!)',"zero-bs-crm"),
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'noleave' => __('No, leave them',"zero-bs-crm"),
-                'yesthose' => __('Yes, remove everything',"zero-bs-crm"),
-                'deleted' => __('Deleted',"zero-bs-crm"),
+                'andthese' => __('Shall I also delete the associated Contacts, Invoices, Quotes, Transactions and Events? (This cannot be undone!)',"zero-bs-crm"),                
                 'companysdeleted' => __('Your company(s) have been deleted.',"zero-bs-crm"),
-                'notdeleted' => __('Could not delete!',"zero-bs-crm"),
                 'notcompanysdeleted' => __('Your company(s) could not be deleted.',"zero-bs-crm"),
 
                 // bulk actions - add/remove tags
-                'whichtags' => __('Which Tag(s)?',"zero-bs-crm"),
-                'whichtagsadd' => __('Which Tag(s) would you like to add?',"zero-bs-crm"),
-                'whichtagsremove' => __('Which Tag(s) would you like to remove?',"zero-bs-crm"),
-                
-                'notags' => __('You do not have any tags, do you want to',"zero-bs-crm").' <a target="_blank" href="'.admin_url('admin.php?page='.$zbs->slugs['tagmanager'].'&tagtype=contact').'">'.__('Add some',"zero-bs-crm").'</a>',
-                
-                'addthesetags' => __('Add Tags',"zero-bs-crm"),
-                'tagsadded' => __('Tags Added',"zero-bs-crm"),
-                'tagsaddeddesc' => __('Your tags have been successsfully added.',"zero-bs-crm"),
-                'tagsnotadded' => __('Tags Not Added',"zero-bs-crm"),
-                'tagsnotaddeddesc' => __('Your tags could not be added.',"zero-bs-crm"),
-
-                'tagsnotselected' => __('No Tags Selected',"zero-bs-crm"),
-                'tagsnotselecteddesc' => __('You did not select any tags.',"zero-bs-crm"),
-
-                'removethesetags' => __('Remove Tags',"zero-bs-crm"),
-                'tagsremoved' => __('Tags Removed',"zero-bs-crm"),
-                'tagsremoveddesc' => __('Your tags have been successsfully removed.',"zero-bs-crm"),
-                'tagsnotremoved' => __('Tags Not Removed',"zero-bs-crm"),
-                'tagsnotremoveddesc' => __('Your tags could not be removed.',"zero-bs-crm")
+                'notags' => __('You do not have any tags, do you want to',"zero-bs-crm").' <a target="_blank" href="'.zbsLink('tags',-1,'zerobs_company',false,'company').'">'.__('Add a tag',"zero-bs-crm").'</a>',
 
             ),
             'bulkActions'   => array('delete','addtag','removetag','export'),
@@ -217,42 +179,29 @@ function zeroBSCRM_render_quoteslist_page(){
 
 
                 // bulk actions - quote deleting
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'areyousurethese' => __('Are you sure you want to delete these?',"zero-bs-crm"),
                 'andthese' => __('Shall I also delete the associated Invoices, Quotes, Transactions and Events?',"zero-bs-crm"),
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'noleave' => __('No, leave them',"zero-bs-crm"),
-                'yesthose' => __('Yes, remove everything',"zero-bs-crm"),
-                'yesdoit' => __('Yes, delete!',"zero-bs-crm"),
-                'deleted' => __('Deleted',"zero-bs-crm"),
                 'quotesdeleted' => __('Your quote(s) have been deleted.',"zero-bs-crm"),
-                'notdeleted' => __('Could not delete!',"zero-bs-crm"),
                 'notquotesdeleted' => __('Your quote(s) could not be deleted.',"zero-bs-crm"),
 
-
                 // bulk actions - quote accepting
-                'acceptareyousure' => __('Are you sure?',"zero-bs-crm"),
-                'acceptareyousurethese' => __('Are you sure you want to mark these quotes as accepted?',"zero-bs-crm"),
-                'acceptareyousure' => __('Are you sure?',"zero-bs-crm"),
-                'acceptyesdoit' => __('Yes, accept',"zero-bs-crm"),
+                'acceptareyousurequotes' => __('Are you sure you want to mark these quotes as accepted?',"zero-bs-crm"),
                 'acceptdeleted' => __('Quote(s) Accepted',"zero-bs-crm"),
                 'acceptquotesdeleted' => __('Your quote(s) have been marked accepted.',"zero-bs-crm"),
                 'acceptnotdeleted' => __('Could not mark accepted!',"zero-bs-crm"),
                 'acceptnotquotesdeleted' => __('Your quote(s) could not be marked accepted.',"zero-bs-crm"),
 
-
                 // bulk actions - quote un accepting
-                'unacceptareyousure' => __('Are you sure?',"zero-bs-crm"),
                 'unacceptareyousurethese' => __('Are you sure you want to mark these quotes as unaccepted?',"zero-bs-crm"),
-                'unacceptareyousure' => __('Are you sure?',"zero-bs-crm"),
-                'unacceptyesdoit'  => __('Yes, proceed',"zero-bs-crm"),
                 'unacceptdeleted' => __('Quote(s) Unaccepted',"zero-bs-crm"),
                 'unacceptquotesdeleted' => __('Your quote(s) have been marked unaccepted.',"zero-bs-crm"),
                 'unacceptnotdeleted' => __('Could not mark unaccepted!',"zero-bs-crm"),
                 'unacceptnotquotesdeleted' => __('Your quote(s) could not be marked unaccepted.',"zero-bs-crm"),
 
+                // bulk actions - add/remove tags
+                'notags' => __('You do not have any tags, do you want to',"zero-bs-crm").' <a target="_blank" href="'.zbsLink('tags',-1,'zerobs_quote',false,'quote').'">'.__('Add a tag',"zero-bs-crm").'</a>',
+
             ),
-            'bulkActions'   => array('markaccepted','markunaccepted','delete','export'),
+            'bulkActions'   => array('markaccepted','markunaccepted','addtag','removetag','delete','export'),
             //default 'sortables'     => array('id'),
             //default 'unsortables'   => array('tagged','latestlog','editlink','phonelink')
     ));
@@ -335,28 +284,17 @@ function zeroBSCRM_render_invoiceslist_page(){
             'postPage'      => 'manage-invoices',
             'langLabels'    => array(
 
-                'nocustomer' => __('Not Assigned',"zero-bs-crm"),
                 
                 // bulk action labels
                 'delete' => __('Delete Invoice(s)',"zero-bs-crm"),
-                'changestatus' => __('Change Status',"zero-bs-crm"),
                 'export' => __('Export Invoice(s)',"zero-bs-crm"),
 
-
                 // bulk actions - invoice deleting
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'yesdoit' => __('Yes, delete!',"zero-bs-crm"),
-                'deleted' => __('Deleted',"zero-bs-crm"),
                 'invoicesdeleted' => __('Your invoice(s) have been deleted.',"zero-bs-crm"),
-                'notdeleted' => __('Could not delete!',"zero-bs-crm"),
                 'notinvoicesdeleted' => __('Your invoice(s) could not be deleted.',"zero-bs-crm"),
 
-
                 // bulk actions - invoice status update
-                'statusareyousure' => __('Are you sure?',"zero-bs-crm"),
                 'statusareyousurethese' => __('Are you sure you want to change the status on marked invoice(s)?',"zero-bs-crm"),
-                'statusareyousure' => __('Are you sure?',"zero-bs-crm"),
-                'statusyesdoit' => __('Yes, update',"zero-bs-crm"),
                 'statusupdated' => __('Invoice(s) Updated',"zero-bs-crm"),
                 'statusinvoicesupdated' => __('Your invoice(s) have been updated.',"zero-bs-crm"),
                 'statusnotupdated' => __('Could not update invoice!',"zero-bs-crm"),
@@ -366,9 +304,12 @@ function zeroBSCRM_render_invoiceslist_page(){
                 'statuspaid' => __('Paid',"zero-bs-crm"),
                 'statusoverdue' => __('Overdue',"zero-bs-crm"),
 
+                // bulk actions - add/remove tags
+                'notags' => __('You do not have any tags, do you want to',"zero-bs-crm").' <a target="_blank" href="'.zbsLink('tags',-1,'zerobs_invoice',false,'invoice').'">'.__('Add a tag',"zero-bs-crm").'</a>',
+
 
             ),
-            'bulkActions'   => array('changestatus','delete','export'),
+            'bulkActions'   => array('changestatus','addtag','removetag','delete','export'),
             //default 'sortables'     => array('id'),
             //default 'unsortables'   => array('tagged','latestlog','editlink','phonelink'),
             'extraBoxes' => $upsellBoxHTML
@@ -401,45 +342,12 @@ function zeroBSCRM_render_transactionslist_page(){
 
                 // bulk action labels
                 'delete' => __('Delete Transaction(s)',"zero-bs-crm"),
-                'addtags' => __('Add tag(s)',"zero-bs-crm"),
-                'removetags' => __('Remove tag(s)',"zero-bs-crm"),
                 'export' => __('Export Transaction(s)',"zero-bs-crm"),
 
-
-                // bulk actions - transaction deleting
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'areyousurethese' => __('Are you sure you want to delete these?',"zero-bs-crm").'<br/>'.__('(There is no way to undo this!)',"zero-bs-crm"),
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'noleave' => __('No, leave them',"zero-bs-crm"),
-                'yesthose' => __('Yes, remove everything',"zero-bs-crm"),
-                'deleted' => __('Deleted',"zero-bs-crm"),
-                'contactsdeleted' => __('Your transaction(s) have been deleted.',"zero-bs-crm"),
-                'notdeleted' => __('Could not delete!',"zero-bs-crm"),
-                'notcontactsdeleted' => __('Your transaction(s) could not be deleted.',"zero-bs-crm"),
-
                 // bulk actions - add/remove tags
-                'whichtags' => __('Which Tag(s)?',"zero-bs-crm"),
-                'whichtagsadd' => __('Which Tag(s) would you like to add?',"zero-bs-crm"),
-                'whichtagsremove' => __('Which Tag(s) would you like to remove?',"zero-bs-crm"),
-                
-                'notags' => __('You do not have any tags, do you want to',"zero-bs-crm").' <a target="_blank" href="'.admin_url('edit-tags.php?taxonomy=zerobscrm_transactiontag&post_type=zerobs_transaction').'">'.__('Add some',"zero-bs-crm").'</a>',
-                
-                'addthesetags' => __('Add Tags',"zero-bs-crm"),
-                'tagsadded' => __('Tags Added',"zero-bs-crm"),
-                'tagsaddeddesc' => __('Your tags have been successsfully added.',"zero-bs-crm"),
-                'tagsnotadded' => __('Tags Not Added',"zero-bs-crm"),
-                'tagsnotaddeddesc' => __('Your tags could not be added.',"zero-bs-crm"),
-
-                'tagsnotselected' => __('No Tags Selected',"zero-bs-crm"),
-                'tagsnotselecteddesc' => __('You did not select any tags.',"zero-bs-crm"),
-
-                'removethesetags' => __('Remove Tags',"zero-bs-crm"),
-                'tagsremoved' => __('Tags Removed',"zero-bs-crm"),
-                'tagsremoveddesc' => __('Your tags have been successsfully removed.',"zero-bs-crm"),
-                'tagsnotremoved' => __('Tags Not Removed',"zero-bs-crm"),
-                'tagsnotremoveddesc' => __('Your tags could not be removed.',"zero-bs-crm"),
-
-
+                'notags' => __('You do not have any tags, do you want to',"zero-bs-crm").' <a target="_blank" href="'.zbsLink('tags',-1,'zerobs_transaction',false,'transaction').'">'.__('Add a tag',"zero-bs-crm").'</a>',                
+               
+                // statuses
                 'trans_status_cancelled' => __('Cancelled',"zero-bs-crm"),
                 'trans_status_hold' => __('Hold',"zero-bs-crm"),
                 'trans_status_pending' => __('Pending',"zero-bs-crm"),
@@ -448,7 +356,6 @@ function zeroBSCRM_render_transactionslist_page(){
                 'trans_status_failed' => __('Failed',"zero-bs-crm"),
                 'trans_status_completed' => __('Completed',"zero-bs-crm"),
                 'trans_status_succeeded' => __('Succeeded',"zero-bs-crm"),
-
 
             ),
             'bulkActions'   => array('addtag','removetag','delete','export'),
@@ -516,13 +423,7 @@ function zeroBSCRM_render_formslist_page(){
 
 
                 // bulk actions - deleting
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'areyousurethese' => __('Are you sure you want to delete these?',"zero-bs-crm"),
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'yesdoit'  => __('Yes, delete!',"zero-bs-crm"),
-                'deleted' => __('Deleted',"zero-bs-crm"),
                 'formsdeleted' => __('Your form(s) have been deleted.',"zero-bs-crm"),
-                'notdeleted' => __('Could not delete!',"zero-bs-crm"),
                 'notformsdeleted' => __('Your form(s) could not be deleted.',"zero-bs-crm"),
 
             ),
@@ -600,27 +501,17 @@ function zeroBSCRM_render_segmentslist_page(){
             'postPage'      => $zbs->slugs['segments'],
             'langLabels'    => array(
 
+                // compiled language
                 'lastCompiled' => __('Last Compiled',"zero-bs-crm"),
                 'notCompiled' => __('Not Compiled',"zero-bs-crm"),
-                'view' => __('View',"zero-bs-crm"),
-                'edit' => __('Edit',"zero-bs-crm"),
-                'deletestr' => __('Delete',"zero-bs-crm"),
                 
                 // bulk action labels
                 'deletesegments' => __('Delete Segment(s)',"zero-bs-crm"),
                 'export' => __('Export Segment(s)',"zero-bs-crm"),
 
-
-                // bulk actions - contact deleting
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'areyousurethese' => __('Are you sure you want to delete these?',"zero-bs-crm"),
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'noleave' => __('No, leave them',"zero-bs-crm"),
-                'yesthose' => __('Yes, Delete them',"zero-bs-crm"),
-                'deleted' => __('Deleted',"zero-bs-crm"),
-                'contactsdeleted' => __('Your segment(s) have been deleted.',"zero-bs-crm"),
-                'notdeleted' => __('Could not delete!',"zero-bs-crm"),
-                'notcontactsdeleted' => __('Your segment(s) could not be deleted.',"zero-bs-crm"),
+                // bulk actions - segment deleting
+                'segmentsdeleted' => __('Your segment(s) have been deleted.',"zero-bs-crm"),
+                'notsegmentsdeleted' => __('Your segment(s) could not be deleted.',"zero-bs-crm"),
 
             ),
             'bulkActions'   => array('delete'),
@@ -647,28 +538,6 @@ function zeroBSCRM_render_quotetemplateslist_page(){
 
     #} has no sync ext? Sell them
     $upsellBoxHTML = ''; 
-    
-    /* 
-            #} has sync ext? Give feedback
-            if (!zeroBSCRM_hasPaidExtensionActivated()){ 
-
-                ##WLREMOVE
-                // first build upsell box html
-                $upsellBoxHTML = '<!-- Forms PRO box --><div class="">';
-                $upsellBoxHTML .= '<h4>Need More Complex Forms?</h4>';
-
-                    $upTitle = __('Fully Flexible Forms',"zero-bs-crm");
-                    $upDesc = __('Zero BS CRM forms cover simple use contact and subscription forms, but if you need more we suggest using a form plugin like Contact Form 7 or Gravity Forms:',"zero-bs-crm");
-                    $upButton = __('See Full Form Options',"zero-bs-crm");
-                    $upTarget = 'https://zerobscrm.com/feature/forms/#benefit';
-
-                    $upsellBoxHTML .= zeroBSCRM_UI2_squareFeedbackUpsell($upTitle,$upDesc,$upButton,$upTarget); 
-
-                $upsellBoxHTML .= '</div><!-- / Inv Forms box -->';
-                ##/WLREMOVE
-            }
-    */
-
 
     $list = new zeroBSCRM_list(array(
 
@@ -684,22 +553,16 @@ function zeroBSCRM_render_quotetemplateslist_page(){
                 'delete' => __('Delete Quote Template(s)',"zero-bs-crm"),
                 'export' => __('Export Quote Template(s)',"zero-bs-crm"),
 
-                // bulk actions - deleting
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'areyousurethese' => __('Are you sure you want to delete these?',"zero-bs-crm"),
-                'areyousure' => __('Are you sure?',"zero-bs-crm"),
-                'yesdoit'  => __('Yes, delete!',"zero-bs-crm"),
-                'deleted' => __('Deleted',"zero-bs-crm"),
-                'formsdeleted' => __('Your quote template(s) have been deleted.',"zero-bs-crm"),
-                'notdeleted' => __('Could not delete!',"zero-bs-crm"),
-                'notformsdeleted' => __('Your quote template(s) could not be deleted.',"zero-bs-crm"),
-
                 // for listview
-                'defaulttemplate' => __('Default Template','zero-bs-crm')
+                'defaulttemplate' => __('Default Template','zero-bs-crm'),
+                'deletetemplate' => __('Delete Template','zero-bs-crm'),
+
+                // bulk actions - quote template deleting
+                'quotetemplatesdeleted' => __('Your Quote template(s) have been deleted.',"zero-bs-crm"),
+                'notquotetemplatesdeleted' => __('Your Quote template(s) could not be deleted.',"zero-bs-crm"),
+
             ),
             'bulkActions'   => array('delete'),
-            //default 'sortables'     => array('id'),
-            //default 'unsortables'   => array('tagged','latestlog','editlink','phonelink')
             'extraBoxes' => $upsellBoxHTML
     ));
 

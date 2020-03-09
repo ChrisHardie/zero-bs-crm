@@ -133,8 +133,11 @@ ul#adminmenu a.wp-has-current-submenu:after, ul#adminmenu>li.current>a.current:a
 
 	// default (not open)
 	#wpcontent {
-		margin-left:160px !important; 
-		margin-top:0px !important;
+
+		 /* Removed  !important 3.0.12 as was conflicting with calypsoify, avoid using these without testing */
+		margin-left:160px;
+		margin-top:0px;
+
 	}
 
 	// open

@@ -87,6 +87,11 @@
                'objtype' => '*',
                'description' => 'failed_creating_tables'
             ),
+            307 => array(
+               'area' => 'dal',
+               'objtype' => '*',
+               'description' => 'invalid_alias'
+            ),
 
 
             // ================ Migrations

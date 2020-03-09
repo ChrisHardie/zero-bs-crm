@@ -507,6 +507,7 @@ function zeroBSCRM_pages_admin_tags(){
         $tagView = new zeroBSCRM_TagManager(array(
 
                 'objType'       => 'transaction',
+                'objTypeID'     => ZBS_TYPE_TRANSACTION, // v3.0 +
                 'singular'      => __('Transaction',"zero-bs-crm"),
                 'plural'        => __('Transactions',"zero-bs-crm"),
                 'postType'      => 'zerobs_transaction',
@@ -7558,9 +7559,7 @@ function zeroBSCRM_html_systemstatus(){
                     $bodyStr .= '<div class="fourteen wide column"><p style="font-size: 1.1em;">'.$error[1].'</p></div>';
                   $bodyStr .= '</div>';
                 $bodyStr .= '</div>';
-
                 
-
               }
 
             $bodyStr .= '</div>';
@@ -7574,7 +7573,10 @@ function zeroBSCRM_html_systemstatus(){
 
         echo $bodyStr;
 
-        ?><p style="text-align:center;margin:2em"><a href="<?php echo zeroBSCRM_getAdminURL($zbs->slugs['systemstatus']); ?>" class="ui button blue"><?php _e('Back to System Status',"zero-bs-crm"); ?></a></p><?php
+        ?><p style="text-align:center;margin:2em">
+            <?php if (zeroBSCRM_isZBSAdminOrAdmin()){ ?><a href="<?php echo esc_url(zeroBSCRM_getAdminURL($zbs->slugs['systemstatus']).'&cacheCheck=1'); ?>" class="ui button teal"><?php _e('View Migration Cache','zero-bs-crm'); ?></a><?php } ?>
+            <a href="<?php echo zeroBSCRM_getAdminURL($zbs->slugs['systemstatus']); ?>" class="ui button blue"><?php _e('Back to System Status',"zero-bs-crm"); ?></a>            
+        </p><?php
 
     } else {
 
@@ -7583,17 +7585,127 @@ function zeroBSCRM_html_systemstatus(){
 
     }
 
+  } elseif (isset($_GET['cacheCheck']) && zeroBSCRM_isZBSAdminOrAdmin()){
+
+
+      $normalSystemStatusPage = false;
+
+      global $ZBSCRM_t;
+
+      $zbsCPTs = array(
+        'zerobs_customer' => _x('Contact','Contact Info (not the verb)','zero-bs-crm'),
+        'zerobs_company' => _x('Company','A Company, e.g. incorporated organisation','zero-bs-crm'),
+        'zerobs_invoice' => _x('Invoice','Invoice object (not the verb)','zero-bs-crm'),
+        'zerobs_quote' => _x('Quote','Quote object (not the verb) (proposal)','zero-bs-crm'),
+        'zerobs_quo_template' => _x('Quote Template','Quote template object (not the verb)','zero-bs-crm'),
+        'zerobs_transaction' => _x('Transaction','Transaction object (not the verb)','zero-bs-crm'),
+        'zerobs_form' => _x('Form','Website Form object (not shape)','zero-bs-crm')
+      );
+
+      echo '<div style="margin:1em;">';
+      echo '<h2>'.__('Migration Cache','zero-bs-crm').'</h2>';
+
+      if (isset($_GET['clearCache'])){
+
+        // dump cache
+
+          if  (!isset($_GET['imsure'])){
+
+              // sure you want to clear cache?
+              $message = '<p>'.__('Are you sure you want to delete the migration object cache?','zero-bs-crm').'</p>';
+              $message .= '<p>'.__('Clearing this cache will remove all backups ZBS has kept of previous data','zero-bs-crm').'</p>';
+              $message .= '<p>'.__('(This will free up database space and will not affect your current ZBS data, but please note this cannot be undone)','zero-bs-crm').'</p>';              
+              $message .= '<p>';
+                $message .= '<a href="'.wp_nonce_url('?page='.$zbs->slugs['systemstatus'].'&cacheCheck=1&clearCache=1&imsure=1','pleaseremovemigrationcache').'" class="ui button orange">'.__('Clear Migration Cache','zero-bs-crm').'</a>';
+                $message .= '<a href="'.zeroBSCRM_getAdminURL($zbs->slugs['systemstatus']).'" class="ui button blue">'.__('Back to System Status',"zero-bs-crm").'</a>';
+              $message .= '</p>';
+
+              echo zeroBSCRM_UI2_messageHTML('warning',__('Clear Migration Object Cache?','zero-bs-crm'),$message,'warning','clearObjCache');
+            
+
+          } else {
+
+            // if sure, clear cache
+            if (wp_verify_nonce( $_GET['_wpnonce'], 'pleaseremovemigrationcache' )){
+
+                // is admin, passed 'I'm Sure' nonce check... clear the cache   
+                $objCount = $zbs->DAL->truncate('dbmigrationbkposts');
+                $objMetaCount = $zbs->DAL->truncate('dbmigrationbkmeta');
+
+                // and store a log as audit trail
+                $log = get_option( 'zbs_dbmig_cacheclear' );
+                if (!is_array($log)) $log = array();
+                $log[] = time();
+                update_option('zbs_dbmig_cacheclear',$log);
+
+                // cleared
+                $message = '<p>'.__('You have cleared the migration object cache','zero-bs-crm').'</p>';
+                $message .= '<p>'.zeroBSCRM_prettifyLongInts($objCount).' x '.__('Object','zero-bs-crm').' & '.zeroBSCRM_prettifyLongInts($objMetaCount).' x '.__('Meta','zero-bs-crm').'</p>';
+                $message .= '<p>';
+                  $message .= '<a href="'.zeroBSCRM_getAdminURL($zbs->slugs['systemstatus']).'" class="ui button blue">'.__('Back to System Status',"zero-bs-crm").'</a>';
+                $message .= '</p>';
+
+                echo zeroBSCRM_UI2_messageHTML('info',__('Cleared Migration Object Cache','zero-bs-crm'),$message,'warning','clearObjCache');
+
+            } else {
+
+                // nonce not verified, spoof attempt
+                exit();
+
+            }
+
+          }
+
+
+      } else {
+
+        // show cache
+          
+          ?><table class="table table-bordered table-striped wtab">
+             
+                 <thead>
+                  
+                      <tr>
+                          <th colspan="2" class="wmid"><?php _e('ZBS Pre-Migration Object Cache',"zero-bs-crm"); ?>:</th>
+                      </tr>
+
+                  </thead>
+                    
+                  <tbody><?php              
+
+          foreach ($zbsCPTs as $cpt => $label){
+
+                $count = (int)$wpdb->get_var($wpdb->prepare('SELECT COUNT(ID) FROM '.$ZBSCRM_t['dbmigrationbkposts'].' WHERE post_type = %s',$cpt));
+
+                 ?>
+                 <tr>
+                    <td class="wfieldname">
+                      <label for="cpt_<?php esc_attr_e( $cpt ); ?>">
+                        <?php printf( _x( '%s Objects:', 'table field label', 'zero-bs-crm' ), $label ); ?>
+                      </label>
+                    </td>
+                    <td><?php echo zeroBSCRM_prettifyLongInts($count); ?></td>
+                  </tr>
+                  <?php
+
+          }
+
+          ?></tbody></table><?php
+
+            ?><p style="text-align:center;margin:2em">
+                <?php if (zeroBSCRM_isZBSAdminOrAdmin()){ ?><a href="<?php echo wp_nonce_url('?page='.$zbs->slugs['systemstatus'].'&cacheCheck=1&clearCache=1','clearmigrationcache'); ?>" class="ui button orange"><?php _e('Clear Migration Cache','zero-bs-crm'); ?></a><?php } ?>
+                <a href="<?php echo zeroBSCRM_getAdminURL($zbs->slugs['systemstatus']); ?>" class="ui button blue"><?php _e('Back to System Status',"zero-bs-crm"); ?></a>            
+            </p><?php
+
+      }
+
+      echo '</div>';
+
   }
 
   if ($normalSystemStatusPage){
 
-
-  $settings = $zbs->settings->getAll();   
-
-    /* debug: see rewrite rules
-    $rules = get_option( 'rewrite_rules' );
-    echo '<pre>'; print_r($rules); echo '</pre>';
-    */
+    $settings = $zbs->settings->getAll();
 
     // catch tools:
     if (current_user_can('admin_zerobs_manage_options') && isset($_GET['resetuserroles']) && wp_verify_nonce( $_GET['_wpnonce'], 'resetuserroleszerobscrm' ) ){
@@ -7645,6 +7757,20 @@ function zeroBSCRM_html_systemstatus(){
 
         }
 
+        // Got any persisitent SQL errors on db table creation?
+        $creationErrors = get_option('zbs_db_creation_errors');
+        if (is_array($creationErrors) && isset($creationErrors['lasttried'])){
+
+            // has persistent SQL creation errors
+            $generalErrors['creationsql'] = __('ZBS CRM experienced errors while trying to build it\'s database tables. Please contact support sharing the following errors:','zero-bs-crm').' (#306sql)';
+            if (is_array($creationErrors['errors'])) foreach ($creationErrors['errors'] as $err){
+
+                $generalErrors['creationsql'] .= '<br />&nbsp;&nbsp;'.$err;
+
+            }
+
+        }
+
   ?>
     
         <p id="sbDesc"><?php _e('This page allows easy access for the various system status variables related to your WordPress install and ZBS CRM.',"zero-bs-crm"); ?></p>
@@ -7674,6 +7800,7 @@ function zeroBSCRM_html_systemstatus(){
                           'dbver' => 'Database Version',
                           'dalver' => 'DAL Version',
                           'mysql' => 'MySQL Version',
+                          'innodb' => 'InnoDB Storage Engine',
                           'sqlrights' => 'SQL Permissions',
                           # clear auto-draft
                           'autodraftgarbagecollect' => 'Auto-draft Garbage Collection',
@@ -7709,7 +7836,7 @@ function zeroBSCRM_html_systemstatus(){
                         <tr>
                           <td class="wfieldname"><label for="wpzbscrm_env_<?php echo $envCheckKey; ?>"><?php _e($envCheckName,"zero-bs-crm"); ?>:</label></td>
                           <td style="width:540px"><?php 
-                          if (!$result[0] && $envCheckKey != 'devmode') echo '<div class="ui yellow label">'.__('Warning','zero-bs-crm').'</div>';
+                          if (!$result[0] && $envCheckKey != 'devmode') echo '<div class="ui yellow label">'.__('Warning','zero-bs-crm').'</div>&nbsp;&nbsp;';
                           ?><?php echo $result[1]; ?></td>
                         </tr>
 

@@ -333,6 +333,35 @@ We use this CRM ourselves every day. We're here for the long term. (And we're co
 
 == Changelog ==
 
+= 3.0.12 09/03/2020 = 
+* Fixed: Typo's in Alias DAL
+* Fixed: Tasks appearing complete on contact view, when incomplete
+* Fixed: PHP notice in migration
+* Fixed: PHP Notice for PHP 7.3 users from dompdf library
+* Fixed: PHP notice caused by early loading of settings in some instances
+* Fixed: Bug where contact tags could not be removed in bulk from v3
+* Fixed: Broken link on Bulk action tag creation flow (where no tags existed)
+* Fixed: Bug where transaction tag manager wasn't showing up from v3
+* Improved: Added notice to tag list view if no tags created yet
+* Improved: Tweaked styling of bulk action add/remove tag dialog
+* Improved: Updated dompdf
+* Improved: Added basic library manager to ZBS Core
+* Improved: System Status page now shows version of dompdf in use
+* Improved: System Status page now shows InnoDB availability
+* Improved: Database creation is now sensitive to availability of InnoDB Storage Engine
+* Improved: Changed placeholder values for contact fields to use US defaults & added to translations so these can be localised
+* Improved: Custom fields now display full textarea value in Contact Single View vitals box
+* Improved: Added support for new dates to v3 Transaction query layer
+* Added: Quote & Invoice tags can now be managed in bulk via Bulk Actions from list views
+* Added: Tidied up previously created directory "uploads\" (where present)
+* Added: Ability to clear migration cache via System Status page
+* Added: Tasks against companies now show on the company view page
+* Added: Task retrieval for companies built into DAL
+* Added: Expanded support for retrieving Alias emails throughout DAL (for WooSync)
+* Added: Created .pot file and added placeholder language values so these can be localised
+* Added: Support for WordPress.com embedded usage
+* Added: If Database creation hits any snags, it'll now expose these directly to the user on the System Status page
+
 = 3.0.11 04/02/2020 = 
 * Fixed: Portal Access Denied now allows Admin, ZBS Admin
 * Fixed: Easy Access Links now allow entry

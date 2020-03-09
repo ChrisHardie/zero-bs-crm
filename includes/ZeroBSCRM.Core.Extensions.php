@@ -1132,8 +1132,13 @@ function zeroBSCRM_extension_remove_dl_repo($repoName=''){
 #} $checkInstallFonts allows you to just check dompdf, not the piggy-backed pdf fonts installer too (as PDFBuilder needs this)
 function zeroBSCRM_extension_checkinstall_pdfinv($checkInstallFonts=true){
 
+	global $zbs; 
+	
+	// retrieve lib path
+	$includeFile = $zbs->libInclude('dompdf');
+
 	$shouldBeInstalled = zeroBSCRM_getSetting('feat_pdfinv');
-	if ($shouldBeInstalled == "1" && !file_exists(ZEROBSCRM_PATH.'includes/lib/dompdf-0-8-2/autoload.inc.php')){
+	if ($shouldBeInstalled == "1" && !empty($includeFile) && !file_exists($includeFile)){
 
 		#} Brutal really, just set the setting
 		global $zbs;
@@ -1158,8 +1163,14 @@ function zeroBSCRM_extension_checkinstall_pdfinv($checkInstallFonts=true){
 #} Install funcs for free exts
 function zeroBSCRM_extension_install_pdfinv(){
 
+	global $zbs;
+	
+	// retrieve lib path
+	$includeFilePath = $zbs->libPath('dompdf');
+	$includeFile = $zbs->libInclude('dompdf');
+
 	#} Check if already downloaded libs:
-	if (!file_exists(ZEROBSCRM_PATH.'includes/lib/dompdf-0-8-2/autoload.inc.php')){
+	if (!empty($includeFile) && !file_exists($includeFile)){
 
 		global $zbs;
 
@@ -1169,7 +1180,7 @@ function zeroBSCRM_extension_install_pdfinv(){
 			
 			#} dirs
 			$workingDir = ZEROBSCRM_PATH.'temp'.time(); if (!file_exists($workingDir)) wp_mkdir_p($workingDir);
-			$endingDir = ZEROBSCRM_PATH.'includes/lib/dompdf-0-8-2'; if (!file_exists($endingDir)) wp_mkdir_p($endingDir);
+			$endingDir = $includeFilePath; if (!file_exists($endingDir)) wp_mkdir_p($endingDir);
 
 			if (file_exists($endingDir) && file_exists($workingDir)){
 
@@ -1185,7 +1196,7 @@ function zeroBSCRM_extension_install_pdfinv(){
 					$expanded = zeroBSCRM_expandArchive($workingDir.'/pdfinv.zip',$endingDir.'/');
 
 					#} Check success?
-					if (file_exists($endingDir.'/autoload.inc.php')){
+					if (file_exists($includeFile)){
 
 						#} All appears good, clean up
 						if (file_exists($workingDir.'/pdfinv.zip')) unlink($workingDir.'/pdfinv.zip');

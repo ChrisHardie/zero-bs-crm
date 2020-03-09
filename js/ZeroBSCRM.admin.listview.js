@@ -1280,17 +1280,33 @@ function zeroBSCRMJS_initListView(){
                                 };
 
                                 if (inc){
-                                    // opt for each
-                                    var optFuncName = 'zeroBSCRMJS_listView_' + window.zbsListViewSettings.objdbname + '_bulkActionTitle_' + ele;
-                                    //console.log('calling',optFuncName);
-                                    var optnamehtml = window[optFuncName]();
-                                    //console.log('called '  + optFuncName,optnamehtml);                                
-                                    bulkActionsHTML += '<option value="' + ele + '">' + optnamehtml + '</option>';
+
+                                    var optnamehtml = '';
+
+                                    // generic bulkAction support, if available:
+                                    // e.g. zeroBSCRMJS_listView_generic_bulkActionTitle_export
+                                    var bulkActionTitleFuncName = 'zeroBSCRMJS_listView_generic_bulkActionTitle_' + ele; 
+                                    if (typeof window[bulkActionTitleFuncName] == 'function'){
+
+                                        // use it
+                                        optnamehtml = window[bulkActionTitleFuncName]();
+
+                                    } else {
+
+                                        // object-type specific bulkAction support:
+                                        // e.g. zeroBSCRMJS_listView_customer_bulkActionTitle_export
+                                        bulkActionTitleFuncName = 'zeroBSCRMJS_listView_' + window.zbsListViewSettings.objdbname + '_bulkActionTitle_' + ele;                                
+                                        optnamehtml = window[bulkActionTitleFuncName]();
+
+                                    }
+
+                                    // append                         
+                                    if (optnamehtml !== '') bulkActionsHTML += '<option value="' + ele + '">' + optnamehtml + '</option>';
+
                                 }
 
 
                             });
-
 
                         bulkActionsHTML += '</select>';
 
@@ -1308,11 +1324,24 @@ function zeroBSCRMJS_initListView(){
 
                     jQuery('#zbsbulkactionmastergo').unbind('click').click(function(){
 
-                        // fire a gatherer func (allows for SWAL between click + fire (e.g. leave orphans, are you sure, choose tag))
-                        // e.g. zeroBSCRMJS_listView_customer_bulkActionFire_delete
-                        var optFuncName = 'zeroBSCRMJS_listView_' + window.zbsListViewSettings.objdbname + '_bulkActionFire_' + jQuery('#zbsbulkactionmaster').val();
-                        // Debug console.log(optFuncName);
-                        window[optFuncName]();
+                        // fire a gatherer func (allows for SWAL between click + fire (e.g. leave orphans, are you sure, choose tag))                        
+
+                        // generic bulkAction support, if available:
+                        // e.g. zeroBSCRMJS_listView_generic_bulkActionFire_addtag
+                        var bulkActionFuncName = 'zeroBSCRMJS_listView_generic_bulkActionFire_' + jQuery('#zbsbulkactionmaster').val();
+                        if (typeof window[bulkActionFuncName] == 'function'){
+
+                            // use it
+                            window[bulkActionFuncName]();
+
+                        } else {
+
+                            // object-type specific bulkAction support:
+                            // e.g. zeroBSCRMJS_listView_customer_bulkActionFire_delete
+                            var optFuncName = 'zeroBSCRMJS_listView_' + window.zbsListViewSettings.objdbname + '_bulkActionFire_' + jQuery('#zbsbulkactionmaster').val();
+                            window[optFuncName]();
+
+                        }
 
                     });
 
@@ -1771,9 +1800,293 @@ function zeroBSCRMJS_initListView(){
 
         }
 
+
+/* ====================================================================================
+================== Bulk actions - Generic =============================================
+==================================================================================== */
+    
+    // (tries to) generically add's tags to any objtype
+    function zeroBSCRMJS_listView_generic_bulkActionFire_addtag(){
+       
+        // SWAL which tag(s)?
+        var extraParams = { tags: [] };
+
+        // build tag list (toggle'able)
+        var tagSelectList = '<div id="zbs-select-tags" class="ui segment">';
+            if (typeof window.zbsTagsForBulkActions != "undefined" && window.zbsTagsForBulkActions.length > 0){
+
+                jQuery.each(window.zbsTagsForBulkActions,function(ind,tag){
+                    tagSelectList += '<div class="zbs-select-tag ui label"><div class="ui checkbox"><input type="checkbox" data-tagid="' + tag.id + '" id="zbs-tag-' + tag.id + '" /><label for="zbs-tag-' + tag.id + '">' + tag.name + '</label></div></div>';
+                });
+
+            } else {
+
+                tagSelectList += '<div class="ui message"><p>' + zeroBSCRMJS_listViewLang('notags') + '</p></div>'   
+            
+            }
+            tagSelectList += '</div>';
+
+        // see ans 3 here https://stackoverflow.com/questions/31463649/sweetalert-prompt-with-two-input-fields
+        swal({
+          title: zeroBSCRMJS_listViewLang('whichtags'),
+          html: '<div>' + zeroBSCRMJS_listViewLang('whichtagsadd') + '<br />' + tagSelectList + '</div>',
+          //text: "Are you sure you want to delete these?",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: zeroBSCRMJS_listViewLang('addthesetags'),
+          //allowOutsideClick: false,
+          onOpen: function(){
+
+                // bind checkboxes (this just adds nice colour effect, not that important)
+                jQuery('.zbs-select-tag input:checkbox').unbind('click').click(function(){
+                    
+                    jQuery('.zbs-select-tag input:checkbox').each(function(ind,ele){
+
+                        if (jQuery(ele).attr('checked') == 'checked')
+                            jQuery(ele).closest('.ui.label').addClass('blue');
+                        else
+                            jQuery(ele).closest('.ui.label').removeClass('blue');
+
+                    });
+                    
+
+                });
+
+
+          }
+        }).then(function (result) {
+
+            // this check required from swal2 6.0+ https://github.com/sweetalert2/sweetalert2/issues/724
+            if (result.value){
+
+                // get settings
+                extraParams.tags = [];
+
+                    // cycle through each tag input and if checked, add id
+                    jQuery('.zbs-select-tag input:checkbox').each(function(ind,ele){
+
+                        if (jQuery(ele).attr('checked') == 'checked') extraParams.tags.push(jQuery(ele).attr('data-tagid'));
+
+                    });
+
+                // any tags?
+                if (extraParams.tags.length > 0){
+
+
+                    // fire + will automatically refresh list view
+                    zeroBSCRMJS_enactBulkAction('addtag',zeroBSCRMJS_listView_bulkActionsGetChecked(),extraParams,function(r){
+
+                        // success ? SWAL?
+                          swal(
+                            zeroBSCRMJS_listViewLang('tagsadded'),
+                            zeroBSCRMJS_listViewLang('tagsaddeddesc'),
+                            'success'
+                          );
+
+                    },function(r){
+
+                        // fail ? SWAL?
+                        swal(
+                            zeroBSCRMJS_listViewLang('tagsnotadded'),
+                            zeroBSCRMJS_listViewLang('tagsnotaddeddesc'),
+                            'warning'
+                        );
+
+                    }); 
+
+                } else {
+
+                    // didn't select tags
+
+                    swal(
+                        zeroBSCRMJS_listViewLang('tagsnotselected'),
+                        zeroBSCRMJS_listViewLang('tagsnotselecteddesc'),
+                        'warning'
+                    );
+
+                }
+
+            }
+
+        });    
+
+    }
+
+    function zeroBSCRMJS_listView_generic_bulkActionFire_removetag(){
+
+       
+        // SWAL which tag(s)?
+        var extraParams = { tags: [] };
+
+        // build tag list (toggle'able)
+        var tagSelectList = '<div id="zbs-select-tags" class="ui segment">';
+            if (typeof window.zbsTagsForBulkActions != "undefined" && window.zbsTagsForBulkActions.length > 0){
+
+                jQuery.each(window.zbsTagsForBulkActions,function(ind,tag){
+                    tagSelectList += '<div class="zbs-select-tag ui label"><div class="ui checkbox"><input type="checkbox" data-tagid="' + tag.id + '" id="zbs-tag-' + tag.id + '" /><label for="zbs-tag-' + tag.id + '">' + tag.name + '</label></div></div>';
+                });
+
+            } else {
+
+                tagSelectList += '<div class="ui message"><p>' + zeroBSCRMJS_listViewLang('notags') + '</p></div>'   
+            
+            }
+            tagSelectList += '</div>';
+
+        // see ans 3 here https://stackoverflow.com/questions/31463649/sweetalert-prompt-with-two-input-fields
+        swal({
+          title: zeroBSCRMJS_listViewLang('whichtags'),
+          html: '<div>' + zeroBSCRMJS_listViewLang('whichtagsremove') + '<br />' + tagSelectList + '</div>',
+          //text: "Are you sure you want to delete these?",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: zeroBSCRMJS_listViewLang('removethesetags'),
+          //allowOutsideClick: false,
+          onOpen: function(){
+
+                // bind checkboxes (this just adds nice colour effect, not that important)
+                jQuery('.zbs-select-tag input:checkbox').unbind('click').click(function(){
+                    
+                    jQuery('.zbs-select-tag input:checkbox').each(function(ind,ele){
+
+                        if (jQuery(ele).attr('checked') == 'checked')
+                            jQuery(ele).closest('.ui.label').addClass('blue');
+                        else
+                            jQuery(ele).closest('.ui.label').removeClass('blue');
+
+                    });
+                    
+
+                });
+
+
+          }
+        }).then(function (result) {
+
+            // this check required from swal2 6.0+
+            if (result.value){
+
+                // get settings
+                extraParams.tags = [];
+
+                    // cycle through each tag input and if checked, add id
+                    jQuery('.zbs-select-tag input:checkbox').each(function(ind,ele){
+
+                        if (jQuery(ele).attr('checked') == 'checked') extraParams.tags.push(jQuery(ele).attr('data-tagid'));
+
+                    });
+
+                // any tags?
+                if (extraParams.tags.length > 0){
+
+
+                    // fire + will automatically refresh list view
+                    zeroBSCRMJS_enactBulkAction('removetag',zeroBSCRMJS_listView_bulkActionsGetChecked(),extraParams,function(r){
+
+                        // success ? SWAL?
+                          swal(
+                            zeroBSCRMJS_listViewLang('tagsremoved'),
+                            zeroBSCRMJS_listViewLang('tagsremoveddesc'),
+                            'success'
+                          );
+
+                    },function(r){
+
+                        // fail ? SWAL?
+                        swal(
+                            zeroBSCRMJS_listViewLang('tagsnotremoved'),
+                            zeroBSCRMJS_listViewLang('tagsnotremoveddesc'),
+                            'warning'
+                        );
+
+                    }); 
+
+                } else {
+
+                    // didn't select tags
+
+                    swal(
+                        zeroBSCRMJS_listViewLang('tagsnotselected'),
+                        zeroBSCRMJS_listViewLang('tagsnotselecteddesc'),
+                        'warning'
+                    );
+
+                }
+
+            }
+
+        });
+
+    }
+
+    function zeroBSCRMJS_listView_generic_bulkActionFire_export(typestr){
+
+        // directly post to export page
+        var params = { 
+            'sec': window.zbscrmjs_secToken,
+            'objtype': window.zbsListViewSettings.objdbname,
+            'ids':zeroBSCRMJS_listView_bulkActionsGetChecked() 
+        };
+
+        var typeparam = '';
+        if (typeof window.zbsListViewSettings.objdbname != "undefined" && window.zbsListViewSettings.objdbname !== '') typeparam = '&zbstype=' + window.zbsListViewSettings.objdbname;
+
+        zeroBSCRMJS_genericPostData(window.zbsExportPostURL+typeparam,'post',params);
+
+    }
+
+
+    // bulk action titles
+    function zeroBSCRMJS_listView_generic_bulkActionTitle_addtag(){
+
+        //return zeroBSCRMJS_listViewIco('addtags') + ' ' + zeroBSCRMJS_listViewLang('addtags');
+        return zeroBSCRMJS_listViewLang('addtags');
+
+    }
+    function zeroBSCRMJS_listView_generic_bulkActionTitle_removetag(){
+
+        //return zeroBSCRMJS_listViewIco('removetags') + ' ' + zeroBSCRMJS_listViewLang('removetags');
+        return zeroBSCRMJS_listViewLang('removetags');
+
+    }
+    function zeroBSCRMJS_listView_generic_bulkActionTitle_export(){
+
+        //return zeroBSCRMJS_listViewIco('merge') + ' ' + zeroBSCRMJS_listViewLang('merge');
+        return zeroBSCRMJS_listViewLang('export');
+
+    }
+
 /* ====================================================================================
 ============== Bulk actions - Pre-checks - Customers ==================================
 ==================================================================================== */
+
+
+        // ICONS playing up on semantic Select, so cut out for init.
+
+        // bulk action titles
+        function zeroBSCRMJS_listView_customer_bulkActionTitle_delete(){
+
+            //return zeroBSCRMJS_listViewIco('deletecontacts') + ' ' + zeroBSCRMJS_listViewLang('deletecontacts');
+            return zeroBSCRMJS_listViewLang('deletecontacts');
+
+        }
+        function zeroBSCRMJS_listView_customer_bulkActionTitle_merge(){
+
+            //return zeroBSCRMJS_listViewIco('merge') + ' ' + zeroBSCRMJS_listViewLang('merge');
+            return zeroBSCRMJS_listViewLang('merge');
+
+        }
+
+        // Draw <td> for id
+        function zeroBSCRMJS_listView_customer_id(dataLine){
+
+            return '<td>#' + dataLine['id'] + '</td>';
+        }
+
 
         function zeroBSCRMJS_listView_customer_bulkActionFire_delete(){
 
@@ -1825,244 +2138,6 @@ function zeroBSCRMJS_initListView(){
             });
 
 
-
-        }
-        function zeroBSCRMJS_listView_customer_bulkActionFire_addtag(){
-
-           
-            // SWAL which tag(s)?
-            var extraParams = { tags: [] };
-
-            // avail tags will be here: zbsTagsForBulkActions
-
-            // build typeahead html
-            /* actually, a straight list makes more sense, until too many
-            var tagTypeaheadHTML = '<div id="zbs-tag-typeahead-wrap" class="zbstypeaheadwrap zbsbtypeaheadfullwidth">';
-                tagTypeaheadHTML += '<input class="typeahead" type="text" placeholder="Tag...">';
-                tagTypeaheadHTML += '</div>';
-            */
-
-            // build tag list (toggle'able)
-            var tagSelectList = '<div id="zbs-select-tags" class="ui segment">';
-                if (typeof window.zbsTagsForBulkActions != "undefined" && window.zbsTagsForBulkActions.length > 0){
-
-                    jQuery.each(window.zbsTagsForBulkActions,function(ind,tag){
-                        tagSelectList += '<div class="zbs-select-tag ui label"><div class="ui checkbox"><input type="checkbox" data-tagid="' + tag.id + '" id="zbs-tag-' + tag.id + '" /><label for="zbs-tag-' + tag.id + '">' + tag.name + '</label></div></div>';
-                    });
-
-                } else {
-
-                    tagSelectList += '<div class="ui message"><p>' + zeroBSCRMJS_listViewLang('notags') + '</p></div>'   
-                
-                }
-                tagSelectList += '</div>';
-
-            // see ans 3 here https://stackoverflow.com/questions/31463649/sweetalert-prompt-with-two-input-fields
-            swal({
-              title: zeroBSCRMJS_listViewLang('whichtags'),
-              html: '<div>' + zeroBSCRMJS_listViewLang('whichtagsadd') + '<br />' + tagSelectList + '</div>',
-              //text: "Are you sure you want to delete these?",
-              type: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: zeroBSCRMJS_listViewLang('addthesetags'),
-              //allowOutsideClick: false,
-              onOpen: function(){
-
-                    // bind checkboxes (this just adds nice colour effect, not that important)
-                    jQuery('.zbs-select-tag input:checkbox').unbind('click').click(function(){
-                        
-                        jQuery('.zbs-select-tag input:checkbox').each(function(ind,ele){
-
-                            if (jQuery(ele).attr('checked') == 'checked')
-                                jQuery(ele).closest('.ui.label').addClass('blue');
-                            else
-                                jQuery(ele).closest('.ui.label').removeClass('blue');
-
-                        });
-                        
-
-                    });
-
-
-              }
-            }).then(function (result) {
-
-                // this check required from swal2 6.0+ https://github.com/sweetalert2/sweetalert2/issues/724
-                if (result.value){
-
-                    // get settings
-                    extraParams.tags = [];
-
-                        // cycle through each tag input and if checked, add id
-                        jQuery('.zbs-select-tag input:checkbox').each(function(ind,ele){
-
-                                if (jQuery(ele).attr('checked') == 'checked') extraParams.tags.push(jQuery(ele).attr('data-tagid'));
-
-                        });
-
-                    // any tags?
-                    if (extraParams.tags.length > 0){
-
-
-                        // fire + will automatically refresh list view
-                        zeroBSCRMJS_enactBulkAction('addtag',zeroBSCRMJS_listView_bulkActionsGetChecked(),extraParams,function(r){
-
-                            // success ? SWAL?
-                              swal(
-                                zeroBSCRMJS_listViewLang('tagsadded'),
-                                zeroBSCRMJS_listViewLang('tagsaddeddesc'),
-                                'success'
-                              );
-
-                        },function(r){
-
-                            // fail ? SWAL?
-                            swal(
-                                zeroBSCRMJS_listViewLang('tagsnotadded'),
-                                zeroBSCRMJS_listViewLang('tagsnotaddeddesc'),
-                                'warning'
-                            );
-
-                        }); 
-
-                    } else {
-
-                        // didn't select tags
-
-                        swal(
-                            zeroBSCRMJS_listViewLang('tagsnotselected'),
-                            zeroBSCRMJS_listViewLang('tagsnotselecteddesc'),
-                            'warning'
-                        );
-
-                    }
-
-                }
-
-            });
-
-
-                    
-
-
-        }
-        function zeroBSCRMJS_listView_customer_bulkActionFire_removetag(){
-
-           
-            // SWAL which tag(s)?
-            var extraParams = { tags: [] };
-
-            // avail tags will be here: zbsTagsForBulkActions
-
-            // build typeahead html
-            /* actually, a straight list makes more sense, until too many
-            var tagTypeaheadHTML = '<div id="zbs-tag-typeahead-wrap" class="zbstypeaheadwrap zbsbtypeaheadfullwidth">';
-                tagTypeaheadHTML += '<input class="typeahead" type="text" placeholder="Tag...">';
-                tagTypeaheadHTML += '</div>';
-            */
-
-            // build tag list (toggle'able)
-            var tagSelectList = '<div id="zbs-select-tags" class="ui segment">';
-                if (typeof window.zbsTagsForBulkActions != "undefined" && window.zbsTagsForBulkActions.length > 0){
-
-                    jQuery.each(window.zbsTagsForBulkActions,function(ind,tag){
-                        tagSelectList += '<div class="zbs-select-tag ui label"><div class="ui checkbox"><input type="checkbox" data-tagid="' + tag.id + '" id="zbs-tag-' + tag.id + '" /><label for="zbs-tag-' + tag.id + '">' + tag.name + '</label></div></div>';
-                    });
-
-                } else {
-
-                    tagSelectList += '<div class="ui message"><p>' + zeroBSCRMJS_listViewLang('notags') + '</p></div>'   
-                
-                }
-                tagSelectList += '</div>';
-
-            // see ans 3 here https://stackoverflow.com/questions/31463649/sweetalert-prompt-with-two-input-fields
-            swal({
-              title: zeroBSCRMJS_listViewLang('whichtags'),
-              html: '<div>' + zeroBSCRMJS_listViewLang('whichtagsremove') + '<br />' + tagSelectList + '</div>',
-              //text: "Are you sure you want to delete these?",
-              type: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: zeroBSCRMJS_listViewLang('removethesetags'),
-              //allowOutsideClick: false,
-              onOpen: function(){
-
-                    // bind checkboxes (this just adds nice colour effect, not that important)
-                    jQuery('.zbs-select-tag input:checkbox').unbind('click').click(function(){
-                        
-                        jQuery('.zbs-select-tag input:checkbox').each(function(ind,ele){
-
-                            if (jQuery(ele).attr('checked') == 'checked')
-                                jQuery(ele).closest('.ui.label').addClass('blue');
-                            else
-                                jQuery(ele).closest('.ui.label').removeClass('blue');
-
-                        });
-                        
-
-                    });
-
-
-              }
-            }).then(function (result) {
-
-                // this check required from swal2 6.0+
-                if (result.value){
-
-                    // get settings
-                    extraParams.tags = [];
-
-                        // cycle through each tag input and if checked, add id
-                        jQuery('.zbs-select-tag input:checkbox').each(function(ind,ele){
-
-                                if (jQuery(ele).attr('checked') == 'checked') extraParams.tags.push(jQuery(ele).attr('data-tagid'));
-
-                        });
-
-                    // any tags?
-                    if (extraParams.tags.length > 0){
-
-
-                        // fire + will automatically refresh list view
-                        zeroBSCRMJS_enactBulkAction('removetag',zeroBSCRMJS_listView_bulkActionsGetChecked(),extraParams,function(r){
-
-                            // success ? SWAL?
-                              swal(
-                                zeroBSCRMJS_listViewLang('tagsremoved'),
-                                zeroBSCRMJS_listViewLang('tagsremoveddesc'),
-                                'success'
-                              );
-
-                        },function(r){
-
-                            // fail ? SWAL?
-                            swal(
-                                zeroBSCRMJS_listViewLang('tagsnotremoved'),
-                                zeroBSCRMJS_listViewLang('tagsnotremoveddesc'),
-                                'warning'
-                            );
-
-                        }); 
-
-                    } else {
-
-                        // didn't select tags
-
-                        swal(
-                            zeroBSCRMJS_listViewLang('tagsnotselected'),
-                            zeroBSCRMJS_listViewLang('tagsnotselecteddesc'),
-                            'warning'
-                        );
-
-                    }
-
-                }
-
-            });
 
         }
 
@@ -2128,29 +2203,6 @@ function zeroBSCRMJS_initListView(){
 
         }
 
-        function zeroBSCRMJS_listView_customer_bulkActionFire_export(){ zeroBSCRMJS_listView_genericBulkAction_export('contact'); }
-        function zeroBSCRMJS_listView_company_bulkActionFire_export(){ zeroBSCRMJS_listView_genericBulkAction_export('company'); }
-        function zeroBSCRMJS_listView_quote_bulkActionFire_export(){ zeroBSCRMJS_listView_genericBulkAction_export('quote'); }
-        function zeroBSCRMJS_listView_invoice_bulkActionFire_export(){ zeroBSCRMJS_listView_genericBulkAction_export('invoice'); }
-        function zeroBSCRMJS_listView_transaction_bulkActionFire_export(){ zeroBSCRMJS_listView_genericBulkAction_export('transaction'); }
-
-
-        // just a wrapper, this func is the same for all objects fired, so this shortens zeroBSCRMJS_listView_customer_bulkActionFire_export etc.
-        function zeroBSCRMJS_listView_genericBulkAction_export(typestr){
-
-            // directly post to export page
-            var params = { 
-                'sec': window.zbscrmjs_secToken,
-                'objtype': window.zbsListViewSettings.objdbname,
-                'ids':zeroBSCRMJS_listView_bulkActionsGetChecked() 
-            };
-
-            var typeparam = '';
-            if (typeof typestr != "undefined" && typestr !== '') typeparam = '&zbstype=' + typestr;
-
-            zeroBSCRMJS_genericPostData(window.zbsExportPostURL+typeparam,'post',params);
-
-        }
 /* ====================================================================================
 ============== / Bulk actions - Pre-checks - Customers ================================
 ==================================================================================== */
@@ -2520,48 +2572,6 @@ function zeroBSCRMJS_initListView(){
 ============== Field Drawing JS - Customer List View ==================================
 ==================================================================================== */
 
-        // ICONS playing up on semantic Select, so cut out for init.
-
-        // bulk action titles
-        function zeroBSCRMJS_listView_customer_bulkActionTitle_delete(){
-
-            //return zeroBSCRMJS_listViewIco('deletecontacts') + ' ' + zeroBSCRMJS_listViewLang('deletecontacts');
-            return zeroBSCRMJS_listViewLang('deletecontacts');
-
-        }
-        function zeroBSCRMJS_listView_customer_bulkActionTitle_addtag(){
-
-            //return zeroBSCRMJS_listViewIco('addtags') + ' ' + zeroBSCRMJS_listViewLang('addtags');
-            return zeroBSCRMJS_listViewLang('addtags');
-
-        }
-        function zeroBSCRMJS_listView_customer_bulkActionTitle_removetag(){
-
-            //return zeroBSCRMJS_listViewIco('removetags') + ' ' + zeroBSCRMJS_listViewLang('removetags');
-            return zeroBSCRMJS_listViewLang('removetags');
-
-        }
-        function zeroBSCRMJS_listView_customer_bulkActionTitle_merge(){
-
-            //return zeroBSCRMJS_listViewIco('merge') + ' ' + zeroBSCRMJS_listViewLang('merge');
-            return zeroBSCRMJS_listViewLang('merge');
-
-        }
-        function zeroBSCRMJS_listView_customer_bulkActionTitle_export(){
-
-            //return zeroBSCRMJS_listViewIco('merge') + ' ' + zeroBSCRMJS_listViewLang('merge');
-            return zeroBSCRMJS_listViewLang('export');
-
-        }
-
-
-        // Draw <td> for id
-        function zeroBSCRMJS_listView_customer_id(dataLine){
-
-            return '<td>#' + dataLine['id'] + '</td>';
-        }
-
-
         // Second Address Fields
         function zeroBSCRMJS_listView_customer_secaddr1(dataLine){
 
@@ -2662,8 +2672,7 @@ function zeroBSCRMJS_initListView(){
 
             // temp, show count
             var quoteStr = '';
-            // not req. as php formats if (typeof dataLine['quotestotal'] != "undefined") quoteStr = zeroBSCRMJS_formatCurrency(dataLine['quotestotal']); //window.zbJS_curr + dataLine['quotestotal'];
-            if (typeof dataLine['quotestotal'] != "undefined") quoteStr = dataLine['quotestotal']; //window.zbJS_curr + dataLine['quotestotal'];
+            if (typeof dataLine['quotestotal'] != "undefined") quoteStr = dataLine['quotestotal'];
 
             return '<td>' + quoteStr + '</td>';
 
@@ -2673,8 +2682,7 @@ function zeroBSCRMJS_initListView(){
         function zeroBSCRMJS_listView_customer_invoicetotal(dataLine){
 
             // temp, show count
-            var invStr = '';
-            // not req. as php formats if (typeof dataLine['invoicestotal'] != "undefined") invStr = zeroBSCRMJS_formatCurrency(dataLine['invoicestotal']); // window.zbJS_curr + dataLine['invoicestotal']
+            var invStr = ''; 
             if (typeof dataLine['invoicestotal'] != "undefined") invStr = dataLine['invoicestotal'];
 
             return '<td>' + invStr + '</td>';
@@ -2685,8 +2693,7 @@ function zeroBSCRMJS_initListView(){
 
             // temp, show count
             var transStr = '';
-
-            // not req. as php formats if (typeof dataLine['transactionstotal'] != "undefined") transStr = zeroBSCRMJS_formatCurrency(dataLine['transactionstotal']); //  window.zbJS_curr + dataLine['transtotal']
+ 
             if (typeof dataLine['transactionstotal'] != "undefined") transStr = dataLine['transactionstotal'];
 
             // v3.0
@@ -2712,9 +2719,7 @@ function zeroBSCRMJS_initListView(){
             return '<td data-zbs-created-uts="' + dataLine['createduts'] + '">' + date + '</td>';
         }
         // Draw <td> for total value ... just format these in PHP and draw normally...
-        function zeroBSCRMJS_listView_customer_totalvalue(dataLine){
-            //return '<td>' + window.zbJS_curr + dataLine['totalvalue'] + '</td>';
-            // not req as php formats return '<td>' + zeroBSCRMJS_formatCurrency(dataLine['totalvalue']) + '</td>';
+        function zeroBSCRMJS_listView_customer_totalvalue(dataLine){        
             var v = ''; if (typeof dataLine['totalvalue'] != "undefined") v = dataLine['totalvalue'];
             return '<td>' + v + '</td>';
         }
@@ -3186,8 +3191,7 @@ function zbsIdentify(){
 
             // temp, show count
             var transStr = '';
-
-            // not req. as php formats if (typeof dataLine['transactionstotal'] != "undefined") transStr = zeroBSCRMJS_formatCurrency(dataLine['transactionstotal']); //  window.zbJS_curr + dataLine['transtotal']
+            
             if (typeof dataLine['transactionstotal'] != "undefined") transStr = dataLine['transactionstotal'];
 
             return '<td>' + transStr + '</td>';
@@ -3599,8 +3603,6 @@ function zbsIdentify(){
         }
         // Draw <td> for value
         function zeroBSCRMJS_listView_quote_value(dataLine){
-            //return '<td>' + window.zbJS_curr + dataLine['totalvalue'] + '</td>';
-            // not req. as php formats return '<td>' + zeroBSCRMJS_formatCurrency(dataLine['val']) + '</td>';
 
             var value = ''; 
 
@@ -3614,8 +3616,7 @@ function zbsIdentify(){
             return '<td>' + value + '</td>';
         }
         // Draw <td> for status
-        function zeroBSCRMJS_listView_quote_status(dataLine){
-            //return '<td>' + window.zbJS_curr + dataLine['totalvalue'] + '</td>';
+        function zeroBSCRMJS_listView_quote_status(dataLine){            
             var stat = ''; if (typeof dataLine['status'] != "undefined") stat = dataLine['status'];
             return '<td>' + stat + '</td>';
         }
@@ -3665,8 +3666,8 @@ function zbsIdentify(){
 
             // see ans 3 here https://stackoverflow.com/questions/31463649/sweetalert-prompt-with-two-input-fields
             swal({
-              title: zeroBSCRMJS_listViewLang('acceptareyousure'),
-              html: '<div>' + zeroBSCRMJS_listViewLang('acceptareyousurethese') + '</div>',
+              title: zeroBSCRMJS_listViewLang('areyousure'),
+              html: '<div>' + zeroBSCRMJS_listViewLang('acceptareyousurequotes') + '</div>',
               //text: "Are you sure you want to delete these?",
               type: 'warning',
               showCancelButton: true,
@@ -3717,14 +3718,14 @@ function zbsIdentify(){
 
             // see ans 3 here https://stackoverflow.com/questions/31463649/sweetalert-prompt-with-two-input-fields
             swal({
-              title: zeroBSCRMJS_listViewLang('unacceptareyousure'),
+              title: zeroBSCRMJS_listViewLang('areyousure'),
               html: '<div>' + zeroBSCRMJS_listViewLang('unacceptareyousurethese') + '</div>',
               //text: "Are you sure you want to delete these?",
               type: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',
               cancelButtonColor: '#d33',
-              confirmButtonText: zeroBSCRMJS_listViewLang('unacceptyesdoit'),
+              confirmButtonText: zeroBSCRMJS_listViewLang('yesproceed'),
               //allowOutsideClick: false,
             }).then(function (result) {
 
@@ -3776,7 +3777,7 @@ function zbsIdentify(){
               showCancelButton: true,
               confirmButtonColor: '#3085d6',
               cancelButtonColor: '#d33',
-              confirmButtonText: zeroBSCRMJS_listViewLang('yesdoit'),
+              confirmButtonText: zeroBSCRMJS_listViewLang('yesdelete'),
               //allowOutsideClick: false,
             }).then(function (result) {
 
@@ -3813,6 +3814,71 @@ function zbsIdentify(){
         }
 /* ====================================================================================
 ============== / Bulk actions - Pre-checks - Quote ==================================
+==================================================================================== */
+
+/* ====================================================================================
+============ Bulk actions - Pre-checks - Quote Templates  =============================
+==================================================================================== */
+
+        // bulk action title
+        function zeroBSCRMJS_listView_quotetemplate_bulkActionTitle_delete(){
+
+            return zeroBSCRMJS_listViewLang('deletetemplate');
+
+        }
+
+        // bulk action - delete
+        function zeroBSCRMJS_listView_quotetemplate_bulkActionFire_delete(){
+
+            // SWAL sanity check
+            var extraParams = {};
+
+            // see ans 3 here https://stackoverflow.com/questions/31463649/sweetalert-prompt-with-two-input-fields
+            swal({
+              title: zeroBSCRMJS_listViewLang('areyousure'),
+              html: '<div>' + zeroBSCRMJS_listViewLang('areyousurethese') + '</div>',
+              //text: "Are you sure you want to delete these?",
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: zeroBSCRMJS_listViewLang('yesdelete'),
+              //allowOutsideClick: false,
+            }).then(function (result) {
+
+                // this check required from swal2 6.0+ https://github.com/sweetalert2/sweetalert2/issues/724
+                if (result.value){
+
+                    // fire delete + will automatically refresh list view
+                    zeroBSCRMJS_enactBulkAction('delete',zeroBSCRMJS_listView_bulkActionsGetChecked(),extraParams,function(r){
+
+                        // success ? SWAL?
+                          swal(
+                            zeroBSCRMJS_listViewLang('deleted'),
+                            zeroBSCRMJS_listViewLang('quotetemplatesdeleted'),
+                            'success'
+                          );
+
+                    },function(r){
+
+                        // fail ? SWAL?
+                        swal(
+                            zeroBSCRMJS_listViewLang('notdeleted'),
+                            zeroBSCRMJS_listViewLang('notquotetemplatesdeleted'),
+                            'warning'
+                        );
+
+                    }); 
+
+                }
+
+            });
+
+
+
+        }
+/* ====================================================================================
+========== / Bulk actions - Pre-checks - Quote Templates  =============================
 ==================================================================================== */
 
 
@@ -3972,14 +4038,14 @@ function zbsIdentify(){
 
             // see ans 3 here https://stackoverflow.com/questions/31463649/sweetalert-prompt-with-two-input-fields
             swal({
-              title: zeroBSCRMJS_listViewLang('statusareyousure'),
+              title: zeroBSCRMJS_listViewLang('areyousure'),
               html: '<div>' + zeroBSCRMJS_listViewLang('statusareyousurethese') + '</div><select id="zbsbulkactionnewstatus"><option value="Draft" selected="selected">' + zeroBSCRMJS_listViewLang('statusdraft') + '</option><option value="Unpaid">' + zeroBSCRMJS_listViewLang('statusunpaid') + '</option><option value="Paid">' + zeroBSCRMJS_listViewLang('statuspaid') + '</option><option value="Overdue">' + zeroBSCRMJS_listViewLang('statusoverdue') + '</option></select></div>',
               //text: "Are you sure you want to delete these?",
               type: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',
               cancelButtonColor: '#d33',
-              confirmButtonText: zeroBSCRMJS_listViewLang('statusyesdoit'),
+              confirmButtonText: zeroBSCRMJS_listViewLang('yesupdate'),
               //allowOutsideClick: false, 
             }).then(function (result) {
 
@@ -4031,7 +4097,7 @@ function zbsIdentify(){
               showCancelButton: true,
               confirmButtonColor: '#3085d6',
               cancelButtonColor: '#d33',
-              confirmButtonText: zeroBSCRMJS_listViewLang('yesdoit'),
+              confirmButtonText: zeroBSCRMJS_listViewLang('yesdelete'),
               //allowOutsideClick: false,
             }).then(function (result) {
 
@@ -4587,7 +4653,7 @@ function zbsIdentify(){
               showCancelButton: true,
               confirmButtonColor: '#3085d6',
               cancelButtonColor: '#d33',
-              confirmButtonText: zeroBSCRMJS_listViewLang('yesdoit'),
+              confirmButtonText: zeroBSCRMJS_listViewLang('yesdelete'),
               //allowOutsideClick: false,
             }).then(function (result) {
 

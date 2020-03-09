@@ -182,7 +182,11 @@ function zbsJS_bindTagManagerInit(){
                 var newTagID = -1; if (typeof r.id != "undefined") newTagID = r.id;
                 var newTagSlug = ltag; if (typeof r.slug != "undefined") newTagSlug = r.slug;
 
+                // add to local var
                 window.zbsCRMJS_currentTags.push(ltag);
+
+                // remove 'no tags' msg if present
+                jQuery('#zbsNoTagResults').hide();
 
                 // remove from input
                 jQuery('#zbs-add-tag-value').val('');

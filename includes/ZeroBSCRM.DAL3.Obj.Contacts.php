@@ -128,7 +128,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                 // output model
                 'input_type' => 'text',
                 'label' => 'City',
-                'placeholder'=> 'e.g. London',
+                'placeholder'=> 'e.g. New York',
                 'area'=> 'Main Address',
                 'migrate'=>'addresses',
                 'max_len' => 100
@@ -139,7 +139,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                 // output model
                 'input_type' => 'text',
                 'label' => 'County',
-                'placeholder'=> 'e.g. Greater London',
+                'placeholder'=> 'e.g. Kings County',
                 'area'=> 'Main Address',
                 'migrate'=>'addresses',
                 'max_len' => 200
@@ -150,7 +150,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                 // output model
                 'input_type' => 'text',
                 'label' => 'Post Code',
-                'placeholder'=> 'e.g. E1 9XJ',
+                'placeholder'=> 'e.g. 10019',
                 'area'=> 'Main Address',
                 'migrate'=>'addresses',
                 'max_len' => 50
@@ -200,7 +200,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                 // output model
                 'input_type' => 'text',
                 'label' => 'City',
-                'placeholder'=> 'e.g. London',
+                'placeholder'=> 'e.g. Los Angeles',
                 'area'=> 'Second Address',
                 'migrate'=>'addresses',
                 'opt'=>'secondaddress',
@@ -213,7 +213,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                 // output model
                 'input_type' => 'text',
                 'label' => 'County',
-                'placeholder'=> 'e.g. Greater London',
+                'placeholder'=> 'e.g. Los Angeles',
                 'area'=> 'Second Address',
                 'migrate'=>'addresses',
                 'opt'=>'secondaddress',
@@ -226,7 +226,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                 // output model
                 'input_type' => 'text',
                 'label' => 'Post Code',
-                'placeholder'=> 'e.g. E1 9XJ',
+                'placeholder'=> 'e.g. 90001',
                 'area'=> 'Second Address',
                 'migrate'=>'addresses',
                 'opt'=>'secondaddress',
@@ -255,7 +255,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                 // output model
                 'input_type' => 'tel',
                 'label' => 'Home Telephone',
-                'placeholder'=> 'e.g. 01234 567 891',
+                'placeholder'=> 'e.g. 877 2733049',
                 'max_len' => 40
             ),
             'worktel'           => array(
@@ -264,7 +264,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                 // output model
                 'input_type' => 'tel',
                 'label' => 'Work Telephone',
-                'placeholder'=> 'e.g. 01234 567 891',
+                'placeholder'=> 'e.g. 877 2733049',
                 'max_len' => 40
             ),
             'mobtel'            => array(
@@ -273,7 +273,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                 // output model
                 'input_type' => 'tel',
                 'label' => 'Mobile Telephone',
-                'placeholder'=> 'e.g. 07123 580 543',
+                'placeholder'=> 'e.g. 877 2733050',
                 'max_len' => 40
             ),
 
@@ -436,6 +436,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
             'withCompanies'     => false,
             'withOwner'         => false,
             'withValues'        => false, // if passed, returns with 'total' 'invoices_total' 'transactions_total' etc. (requires getting all obj, use sparingly)
+            'withAliases'       => false,
 
             // permissions
             'ignoreowner'   =>  zeroBSCRM_DAL2_ignoreOwnership(ZBS_TYPE_CONTACT), // this'll let you not-check the owner of obj
@@ -482,6 +483,14 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                         $params[] = $cK; $params[] = ZBS_TYPE_CONTACT;
 
                     }
+
+                }
+
+                #} Aliases
+                if ($withAliases){
+
+                    #} Retrieve these as a CSV :)
+                    $extraSelect .= ",(SELECT GROUP_CONCAT(aka_alias SEPARATOR ',') FROM ".$ZBSCRM_t['aka']." WHERE aka_type = ".ZBS_TYPE_CONTACT." AND aka_id = contact.ID) aliases";
 
                 }
 
@@ -839,7 +848,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                                 'assignedContact'   => $potentialRes->ID, // assigned to company id (int)
                                 'page'       => -1,
                                 'perPage'       => -1,
-                                'ignoreowner'   => zeroBSCRM_DAL2_ignoreOwnership(ZBS_TYPE_TRANSACTION),                                    
+                                'ignoreowner'   => zeroBSCRM_DAL2_ignoreOwnership(ZBS_TYPE_EVENT),                                    
                                 'sortByField'   => 'zbse_start',
                                 'sortOrder'     => 'DESC',
                                 'withAssigned'  => false // no need, it's assigned to this obj already
@@ -934,6 +943,8 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
             'simplified'        => false, // returns just id,name,created,email (for typeaheads)
             'withValues'        => false, // if passed, returns with 'total' 'invoices_total' 'transactions_total' etc. (requires getting all obj, use sparingly)
             'onlyColumns'       => false, // if passed (array('fname','lname')) will return only those columns (overwrites some other 'return' options). NOTE: only works for base fields (not custom fields)
+            'withAliases'       => false,
+
 
             'sortByField'   => 'ID',
             'sortOrder'     => 'ASC',
@@ -977,6 +988,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                 $withTags = false;
                 $withOwner = false;
                 $withDND = false;
+                $withAliases = false;
             }
 
             #} If simplified, turn off extras
@@ -991,6 +1003,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                 $withTags = false;
                 $withOwner = false;
                 $withDND = false;
+                $withAliases = false;
             }
 
             #} If onlyColumns, validate
@@ -1031,6 +1044,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                     $withTags = false;
                     $withOwner = false;
                     $withDND = false;
+                    $withAliases = false;
 
                 } else {
 
@@ -1066,6 +1080,14 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                     $params[] = $cK; $params[] = ZBS_TYPE_CONTACT;
 
                 }
+
+            }
+
+            #} Aliases
+            if ($withAliases){
+
+                #} Retrieve these as a CSV :)
+                $extraSelect .= ",(SELECT GROUP_CONCAT(aka_alias SEPARATOR ',') FROM ".$ZBSCRM_t['aka']." WHERE aka_type = ".ZBS_TYPE_CONTACT." AND aka_id = contact.ID) aliases";
 
             }
 
@@ -1850,7 +1872,7 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                                         'assignedContact'   => $resDataLine->ID, // assigned to company id (int)
                                         'page'       => -1,
                                         'perPage'       => -1,
-                                        'ignoreowner'   => zeroBSCRM_DAL2_ignoreOwnership(ZBS_TYPE_TRANSACTION),                                    
+                                        'ignoreowner'   => zeroBSCRM_DAL2_ignoreOwnership(ZBS_TYPE_EVENT),                                    
                                         'sortByField'   => 'zbse_start',
                                         'sortOrder'     => 'DESC',
                                         'withAssigned'  => false // no need, it's assigned to this obj already
@@ -1944,6 +1966,9 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                 'lastcontacted' => -1,
                 // allow this to be set for MS sync etc.
                 'created' => -1,
+
+                // add/update aliases
+                'aliases' => -1, // array of email strings (will be verified)
 
             ),
 
@@ -2431,6 +2456,52 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                                 $this->addUpdateObjectLinks($id,$data['companies'],ZBS_TYPE_COMPANY);
 
 
+                                // Aliases
+                                // Maintain an array of AKA emails
+                                if (isset($data['aliases']) && is_array($data['aliases'])){
+                                    
+                                    $existingAliasesSimple = array();
+                                    $existingAliases = zeroBS_getObjAliases(ZBS_TYPE_CONTACT,$id);
+                                    if (!is_array($existingAliases)) $existingAliases = array();
+
+                                    // compare
+                                    if (is_array($existingAliases)) foreach ($existingAliases as $alias){
+
+                                            // is this alias in the new list?
+                                            if (in_array($alias['aka_alias'], $data['aliases'])) {
+                                                $existingAliasesSimple[] = $alias['aka_alias'];
+                                                continue;
+                                            }
+
+                                            // it's not in the new list, thus, remove it:
+                                            // this could be a smidgen more performant if it just deleted the line
+                                            zeroBS_removeObjAlias(ZBS_TYPE_CONTACT,$id,$alias['aka_alias']);
+
+                                    }
+                                    foreach ($data['aliases'] as $alias){
+
+                                        // valid?
+                                        if (zeroBS_canUseCustomerAlias($alias)){
+
+                                            // is this alias in the existing list? (nothing to do)
+                                            if (in_array($alias, $existingAliasesSimple)) continue;
+
+                                            // it's not in the existing list, thus, add it:
+                                            zeroBS_addObjAlias(ZBS_TYPE_CONTACT,$id,$alias);
+
+                                        } else {
+
+                                            // err - tried to use an invalid alias                            
+                                            $msg = __('Could not add alias (unavailable or invalid):','zero-bs-crm').' '.$alias;
+                                            $zbs->DAL->addError(307,$this->objectType,$msg,$alias);
+
+                                        }
+
+                                    }
+
+                                }
+
+
                             } // / if $data/limitedData
 
 
@@ -2701,6 +2772,52 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
                                                         'objfromid'         => $newID,
                                                         'objtoids'          => $data['companies']));
                     */
+
+
+                    // Aliases
+                    // Maintain an array of AKA emails
+                    if (isset($data['aliases']) && is_array($data['aliases'])){
+                        
+                        $existingAliasesSimple = array();
+                        $existingAliases = zeroBS_getObjAliases(ZBS_TYPE_CONTACT,$newID);
+                        if (!is_array($existingAliases)) $existingAliases = array();
+
+                        // compare
+                        if (is_array($existingAliases)) foreach ($existingAliases as $alias){                            
+
+                            // is this alias in the new list?
+                            if (in_array($alias['aka_alias'], $data['aliases'])) {
+                                $existingAliasesSimple[] = $alias['aka_alias'];
+                                continue;
+                            }
+
+                            // it's not in the new list, thus, remove it:
+                            // this could be a smidgen more performant if it just deleted the line
+                            zeroBS_removeObjAlias(ZBS_TYPE_CONTACT,$newID,$alias['aka_alias']);
+
+                        }
+                        foreach ($data['aliases'] as $alias){
+
+                            // valid?
+                            if (zeroBS_canUseCustomerAlias($alias)){
+
+                                // is this alias in the existing list? (nothing to do)
+                                if (in_array($alias, $existingAliasesSimple)) continue;
+
+                                // it's not in the existing list, thus, add it:
+                                zeroBS_addObjAlias(ZBS_TYPE_CONTACT,$newID,$alias);
+
+                            } else {
+
+                                // err - tried to use an invalid alias                            
+                                $msg = __('Could not add alias (unavailable or invalid):','zero-bs-crm').' '.$alias;
+                                $zbs->DAL->addError(307,$this->objectType,$msg,$alias);
+
+                            }
+
+                        }
+
+                    }
 
                     // Custom fields?
 
@@ -3184,6 +3301,14 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
             // custom fields - tidy any that are present:
             if ($withCustomFields) $res = $this->tidyAddCustomFields(ZBS_TYPE_CONTACT,$obj,$res,true);
 
+            // Aliases
+            if (isset($obj->aliases) && is_string($obj->aliases) && !empty($obj->aliases)){
+
+                // csv => array
+                $res['aliases'] = explode(',',$obj->aliases);
+
+            }
+
         } 
 
         return $res;
@@ -3549,6 +3674,43 @@ class zbsDAL_contacts extends zbsDAL_ObjectLayer {
         }
 
         return false;
+        
+    }
+
+    /**
+     * Returns all email addrs against a contact
+     * ... including aliases
+     *
+     * @param int id Contact ID
+     *
+     * @return array of strings (Contact emails)
+     */
+    public function getContactEmails($id=-1){
+
+        global $zbs;
+
+        $id = (int)$id;
+        $emails = array();
+
+        if ($id > 0){            
+
+            // main record
+            $mainEmail = $this->DAL()->getFieldByID(array(
+                'id' => $id,
+                'objtype' => ZBS_TYPE_CONTACT,
+                'colname' => 'zbsc_email',
+                'ignoreowner' => true));
+
+            if (zeroBSCRM_validateEmail($mainEmail)) $emails[] = $mainEmail;
+
+            // aliases
+            $aliases = zeroBS_getObjAliases(ZBS_TYPE_CONTACT,$id);
+            if (is_array($aliases)) foreach ($aliases as $alias) if (!in_array($alias['aka_alias'],$emails)) $emails[] = $alias['aka_alias'];
+
+
+        }
+
+        return $emails;
         
     }
 

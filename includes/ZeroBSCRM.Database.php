@@ -18,138 +18,132 @@
    ====================================================== */
 
 /* ======================================================
-  API database
+  Table Creation
    ====================================================== */
 
-#} Table Globals (these should prbably be in our $zbs class... )
 global $wpdb, $ZBSCRM_t;
-
-  // contacts v2.5+
-  $ZBSCRM_t['contacts']           = $wpdb->prefix . "zbs_contacts";
-  $ZBSCRM_t['customfields']       = $wpdb->prefix . "zbs_customfields";
-  $ZBSCRM_t['meta']               = $wpdb->prefix . "zbs_meta";
-  $ZBSCRM_t['tags']               = $wpdb->prefix . "zbs_tags";
-  $ZBSCRM_t['taglinks']           = $wpdb->prefix . "zbs_tags_links";
-  $ZBSCRM_t['settings']           = $wpdb->prefix . "zbs_settings";
-
-  $ZBSCRM_t['keys']               = $wpdb->prefix . "zbscrm_api_keys";    //table with the API keys
-  $ZBSCRM_t['segments']           = $wpdb->prefix . "zbs_segments";
-  $ZBSCRM_t['segmentsconditions'] = $wpdb->prefix . "zbs_segments_conditions";
-  // outdated? $ZBSCRM_t['segmentsrules']      = $wpdb->prefix . "zbs_segments_rules";
-  $ZBSCRM_t['adminlog']           = $wpdb->prefix . "zbs_admlog";
-  $ZBSCRM_t['temphash']           = $wpdb->prefix . "zbs_temphash"; // store temporary hashes (e.g. for creating screenshots of html templates (MC2))
-  $ZBSCRM_t['objlinks']           = $wpdb->prefix . "zbs_object_links"; //
-  $ZBSCRM_t['aka']                = $wpdb->prefix . "zbs_aka";
-  $ZBSCRM_t['externalsources']    = $wpdb->prefix . "zbs_externalsources";
-  $ZBSCRM_t['tracking']           = $wpdb->prefix . "zbs_tracking";
-  $ZBSCRM_t['logs']               = $wpdb->prefix . "zbs_logs";
-
-  //email history
-  $ZBSCRM_t['system_mail_templates']        = $wpdb->prefix . "zbs_sys_email";
-  $ZBSCRM_t['system_mail_hist']             = $wpdb->prefix . "zbs_sys_email_hist"; 
-
-  // cron Manager
-  //$ZBSCRM_t['cronmanager']          = $wpdb->prefix . "zbs_sys_cronmanager"; 
-  $ZBSCRM_t['cronmanagerlogs']      = $wpdb->prefix . "zbs_sys_cronmanagerlogs"; 
-
-  // Migration Backup Tables
-  $ZBSCRM_t['dbmigrationbkmeta']    = $wpdb->prefix . "zbs_dbmigration_meta";
-  $ZBSCRM_t['dbmigrationbkposts']   = $wpdb->prefix . "zbs_dbmigration_posts";
-
-  // v3.0+
-  $ZBSCRM_t['companies']   = $wpdb->prefix . "zbs_companies";
-  $ZBSCRM_t['quotes']   = $wpdb->prefix . "zbs_quotes";
-  $ZBSCRM_t['quotetemplates']   = $wpdb->prefix . "zbs_quotes_templates";
-  $ZBSCRM_t['invoices']   = $wpdb->prefix . "zbs_invoices";
-  $ZBSCRM_t['transactions']   = $wpdb->prefix . "zbs_transactions";
-  $ZBSCRM_t['lineitems']   = $wpdb->prefix . "zbs_lineitems";
-  $ZBSCRM_t['forms']   = $wpdb->prefix . "zbs_forms";
-  $ZBSCRM_t['events']   = $wpdb->prefix . "zbs_events";
-  $ZBSCRM_t['eventreminders']   = $wpdb->prefix . "zbs_event_reminders";
-  $ZBSCRM_t['tax']                  = $wpdb->prefix . "zbs_tax_table";
-  $ZBSCRM_t['security_log']                  = $wpdb->prefix . "zbs_security_log";
-
-
-//generate API keys database 
-function zeroBSCRM_database_check(){
   
-  #} telemetry 
-  // V3.0 No more telemetry global $zbs;
-  // V3.0 No more telemetry if ($zbs->settings != null) zeroBSCRM_teleLogAct(2);
+  // Table names
+  $ZBSCRM_t['contacts']               = $wpdb->prefix . "zbs_contacts";
+  $ZBSCRM_t['customfields']           = $wpdb->prefix . "zbs_customfields";
+  $ZBSCRM_t['meta']                   = $wpdb->prefix . "zbs_meta";
+  $ZBSCRM_t['tags']                   = $wpdb->prefix . "zbs_tags";
+  $ZBSCRM_t['taglinks']               = $wpdb->prefix . "zbs_tags_links";
+  $ZBSCRM_t['settings']               = $wpdb->prefix . "zbs_settings";
+  $ZBSCRM_t['keys']                   = $wpdb->prefix . "zbscrm_api_keys";
+  $ZBSCRM_t['segments']               = $wpdb->prefix . "zbs_segments";
+  $ZBSCRM_t['segmentsconditions']     = $wpdb->prefix . "zbs_segments_conditions";
+  $ZBSCRM_t['adminlog']               = $wpdb->prefix . "zbs_admlog";
+  $ZBSCRM_t['temphash']               = $wpdb->prefix . "zbs_temphash";
+  $ZBSCRM_t['objlinks']               = $wpdb->prefix . "zbs_object_links";
+  $ZBSCRM_t['aka']                    = $wpdb->prefix . "zbs_aka";
+  $ZBSCRM_t['externalsources']        = $wpdb->prefix . "zbs_externalsources";
+  $ZBSCRM_t['tracking']               = $wpdb->prefix . "zbs_tracking";
+  $ZBSCRM_t['logs']                   = $wpdb->prefix . "zbs_logs";
+  $ZBSCRM_t['system_mail_templates']  = $wpdb->prefix . "zbs_sys_email";
+  $ZBSCRM_t['system_mail_hist']       = $wpdb->prefix . "zbs_sys_email_hist"; 
+  $ZBSCRM_t['cronmanagerlogs']        = $wpdb->prefix . "zbs_sys_cronmanagerlogs"; 
+  $ZBSCRM_t['dbmigrationbkmeta']      = $wpdb->prefix . "zbs_dbmigration_meta";
+  $ZBSCRM_t['dbmigrationbkposts']     = $wpdb->prefix . "zbs_dbmigration_posts";
+  $ZBSCRM_t['companies']              = $wpdb->prefix . "zbs_companies";
+  $ZBSCRM_t['quotes']                 = $wpdb->prefix . "zbs_quotes";
+  $ZBSCRM_t['quotetemplates']         = $wpdb->prefix . "zbs_quotes_templates";
+  $ZBSCRM_t['invoices']               = $wpdb->prefix . "zbs_invoices";
+  $ZBSCRM_t['transactions']           = $wpdb->prefix . "zbs_transactions";
+  $ZBSCRM_t['lineitems']              = $wpdb->prefix . "zbs_lineitems";
+  $ZBSCRM_t['forms']                  = $wpdb->prefix . "zbs_forms";
+  $ZBSCRM_t['events']                 = $wpdb->prefix . "zbs_events";
+  $ZBSCRM_t['eventreminders']         = $wpdb->prefix . "zbs_event_reminders";
+  $ZBSCRM_t['tax']                    = $wpdb->prefix . "zbs_tax_table";
+  $ZBSCRM_t['security_log']           = $wpdb->prefix . "zbs_security_log";
 
+
+/**
+ * Core-fired Database structure check
+ * ... currently used to check tables exist
+ */
+function zeroBSCRM_database_check(){
 
   #} Check + create
   zeroBSCRM_checkTablesExist();
 
 }
 
+/**
+ * creates the ZBS Database Tables
+ *
+ */
 function zeroBSCRM_createTables(){
+
   global $wpdb, $ZBSCRM_t;
+
+  // Require upgrade.php so we can use dbDelta
   require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+  // Where available we force InnoDB
+  $storageEngineLine = ''; if (zeroBSCRM_DB_canInnoDB()) $storageEngineLine = 'ENGINE = InnoDB';
+
+  // Collation & Character Set
+  $collation = 'utf8_general_ci';
+  $characterSet = 'utf8';
+
+  // We'll collect any errors as we go, exposing, if there are any, on system status page
+  global $zbsDB_lastError,$zbsDB_creationErrors;
+
+    // we log the last error before we start, in case another plugin has left an error in the buffer
+    $zbsDB_lastError = ''; if (isset($wpdb->last_error)) $zbsDB_lastError = $wpdb->last_error;
+    $zbsDB_creationErrors = array();
     
   #} Keys zbs_perm = {0 = revoked, 1 = read_only, 2 = read_and_write 
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['keys'] ." (
-        `zbs_id` INT NOT NULL AUTO_INCREMENT ,
-        `zbs_key` VARCHAR(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL ,
-        `zbs_perm` INT(1) NULL ,       
-        PRIMARY KEY (`zbs_id`) );";
-        dbDelta($sql);
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['keys'] ."(
+  `zbs_id` INT NOT NULL AUTO_INCREMENT ,
+  `zbs_key` VARCHAR(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL ,
+  `zbs_perm` INT(1) NULL ,       
+  PRIMARY KEY (`zbs_id`))
+  ".$storageEngineLine.";";
+  zeroBSCRM_db_runDelta($sql);
 
-  // Create Contacts main table
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['contacts'] ." (
-    `ID` INT NOT NULL AUTO_INCREMENT,
-    `zbs_site` INT NULL DEFAULT NULL,
-    `zbs_team` INT NULL DEFAULT NULL,
-    `zbs_owner` INT NOT NULL,
-    
-    `zbsc_status` VARCHAR(100) NULL,
-    `zbsc_email` VARCHAR(200) NULL,
-    `zbsc_prefix` VARCHAR(30) NULL,
-    `zbsc_fname` VARCHAR(100) NULL,
-    `zbsc_lname` VARCHAR(100) NULL,
-    `zbsc_addr1` VARCHAR(200) NULL,
-    `zbsc_addr2` VARCHAR(200) NULL,
-    `zbsc_city` VARCHAR(100) NULL,
-    `zbsc_county` VARCHAR(200) NULL,
-    `zbsc_country` VARCHAR(200) NULL,
-    `zbsc_postcode` VARCHAR(50) NULL,
-    `zbsc_secaddr1` VARCHAR(200) NULL,
-    `zbsc_secaddr2` VARCHAR(200) NULL,
-    `zbsc_seccity` VARCHAR(100) NULL,
-    `zbsc_seccounty` VARCHAR(200) NULL,
-    `zbsc_seccountry` VARCHAR(200) NULL,
-    `zbsc_secpostcode` VARCHAR(50) NULL,
-    `zbsc_hometel` VARCHAR(40) NULL,
-    `zbsc_worktel` VARCHAR(40) NULL,
-    `zbsc_mobtel` VARCHAR(40) NULL,    
-    `zbsc_wpid` INT NULL DEFAULT NULL,
-    `zbsc_avatar` VARCHAR(300) NULL,
-    `zbsc_tw` VARCHAR(100) NULL,
-    `zbsc_li` VARCHAR(300) NULL,
-    `zbsc_fb` VARCHAR(200) NULL,
-    `zbsc_created` INT(14) NOT NULL,
-    `zbsc_lastupdated` INT(14) NOT NULL,
-    `zbsc_lastcontacted` INT(14) NULL DEFAULT NULL,
-    PRIMARY KEY (`ID`))
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8
-  COLLATE = utf8_general_ci"; // Notes depricated to cf (longtext will slow everything down) `zbsc_notes` LONGTEXT NULL,
-  dbDelta($sql);
+  // Contacts
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['contacts'] ."(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `zbs_site` INT NULL DEFAULT NULL,
+  `zbs_team` INT NULL DEFAULT NULL,
+  `zbs_owner` INT NOT NULL,
+  `zbsc_status` VARCHAR(100) NULL,
+  `zbsc_email` VARCHAR(200) NULL,
+  `zbsc_prefix` VARCHAR(30) NULL,
+  `zbsc_fname` VARCHAR(100) NULL,
+  `zbsc_lname` VARCHAR(100) NULL,
+  `zbsc_addr1` VARCHAR(200) NULL,
+  `zbsc_addr2` VARCHAR(200) NULL,
+  `zbsc_city` VARCHAR(100) NULL,
+  `zbsc_county` VARCHAR(200) NULL,
+  `zbsc_country` VARCHAR(200) NULL,
+  `zbsc_postcode` VARCHAR(50) NULL,
+  `zbsc_secaddr1` VARCHAR(200) NULL,
+  `zbsc_secaddr2` VARCHAR(200) NULL,
+  `zbsc_seccity` VARCHAR(100) NULL,
+  `zbsc_seccounty` VARCHAR(200) NULL,
+  `zbsc_seccountry` VARCHAR(200) NULL,
+  `zbsc_secpostcode` VARCHAR(50) NULL,
+  `zbsc_hometel` VARCHAR(40) NULL,
+  `zbsc_worktel` VARCHAR(40) NULL,
+  `zbsc_mobtel` VARCHAR(40) NULL,    
+  `zbsc_wpid` INT NULL DEFAULT NULL,
+  `zbsc_avatar` VARCHAR(300) NULL,
+  `zbsc_tw` VARCHAR(100) NULL,
+  `zbsc_li` VARCHAR(300) NULL,
+  `zbsc_fb` VARCHAR(200) NULL,
+  `zbsc_created` INT(14) NOT NULL,
+  `zbsc_lastupdated` INT(14) NOT NULL,
+  `zbsc_lastcontacted` INT(14) NULL DEFAULT NULL,
+  PRIMARY KEY (`ID`))
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql);
 
-  // Create custom fields main table - used by all obj types (contacts, companies etc.)
-  /*
-
-    Note - a quick index added here to try to speed up. 
-    ... on v2.0 of db, this is queried PER CF per CONTACT - this might be a lot of subqueries.
-    ... if this proves unperformant, I suggest we opt for second answer here: 
-    https://stackoverflow.com/questions/5106335/how-to-design-a-database-for-user-defined-fields
-    .. specifically:
-
-      (from SO): What I use for this solution when I need truly dynamic custom fields is to store them in a blob of XML, so I can add new fields at any time. But to make it speedy, also create additional tables for each field you need to search or sort on (you don't a table per field--just a table per searchable field). This is sometimes called an inverted index design.
-
-
-    Note 2: added back in site,team,owner 16/3/18 - for total support
-  */
+  // Custom Fields
   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['customfields'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
@@ -163,31 +157,31 @@ function zeroBSCRM_createTables(){
   `zbscf_lastupdated` INT(14) NOT NULL,
   PRIMARY KEY (`ID`),
   INDEX `TYPEIDKEY` (`zbscf_objtype` ASC, `zbscf_objid` ASC, `zbscf_objkey` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci"; 
-  dbDelta($sql); 
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";"; 
+  zeroBSCRM_db_runDelta($sql); 
 
 
-  // Create tags main table - used by all obj types (contacts, companies etc.)
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['tags'] ." (
-    `ID` INT NOT NULL AUTO_INCREMENT,
-    `zbs_site` INT NULL DEFAULT NULL,
-    `zbs_team` INT NULL DEFAULT NULL,
-    `zbs_owner` INT NOT NULL,
-    `zbstag_objtype` INT NOT NULL,
-    `zbstag_name` VARCHAR(200) NOT NULL,
-    `zbstag_slug` VARCHAR(200) NOT NULL,
-    `zbstag_created` INT(14) NOT NULL,
-    `zbstag_lastupdated` INT(14) NOT NULL,
-    PRIMARY KEY (`ID`))
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8
-  COLLATE = utf8_general_ci"; 
-  dbDelta($sql); 
+  // Tags
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['tags'] ."(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `zbs_site` INT NULL DEFAULT NULL,
+  `zbs_team` INT NULL DEFAULT NULL,
+  `zbs_owner` INT NOT NULL,
+  `zbstag_objtype` INT NOT NULL,
+  `zbstag_name` VARCHAR(200) NOT NULL,
+  `zbstag_slug` VARCHAR(200) NOT NULL,
+  `zbstag_created` INT(14) NOT NULL,
+  `zbstag_lastupdated` INT(14) NOT NULL,
+  PRIMARY KEY (`ID`))
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";"; 
+  zeroBSCRM_db_runDelta($sql); 
 
-  // Create tags links table - used by all obj types (contacts, companies etc.)
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['taglinks'] ." (
+  // Tag Relationships (Links)
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['taglinks'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -196,13 +190,13 @@ COLLATE = utf8_general_ci";
   `zbstl_objid` INT NOT NULL,
   `zbstl_tagid` INT NOT NULL,
   PRIMARY KEY (`ID`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci"; 
-  dbDelta($sql); 
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";"; 
+  zeroBSCRM_db_runDelta($sql); 
 
-  // Create settings table
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['settings'] ." (
+  // Settings
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['settings'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -212,13 +206,13 @@ COLLATE = utf8_general_ci";
   `zbsset_created` INT(14) NOT NULL,
   `zbsset_lastupdated` INT(14) NOT NULL,
   PRIMARY KEY (`ID`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-  dbDelta($sql); 
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql); 
 
-  // Create meta table
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['meta'] ." (
+  // Meta Key-Value pairs
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['meta'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -230,57 +224,62 @@ COLLATE = utf8_general_ci";
   `zbsm_created` INT(14) NOT NULL,
   `zbsm_lastupdated` INT(14) NOT NULL,
   PRIMARY KEY (`ID`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-  dbDelta($sql); 
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql); 
 
   #} Segments
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['segments'] ." (
-            `ID` INT NOT NULL AUTO_INCREMENT,
-            `zbs_site` INT NULL DEFAULT NULL,
-            `zbs_team` INT NULL DEFAULT NULL,
-            `zbs_owner` INT NOT NULL,
-            `zbsseg_name` VARCHAR(120) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL,
-            `zbsseg_slug` VARCHAR(45) NOT NULL,
-            `zbsseg_matchtype` VARCHAR(10) NOT NULL,
-            `zbsseg_created` INT(14) NOT NULL,
-            `zbsseg_lastupdated` INT(14) NOT NULL,
-            `zbsseg_compilecount` INT NULL DEFAULT 0,
-            `zbsseg_lastcompiled` INT(14) NOT NULL,
-            PRIMARY KEY (`ID`))
-          DEFAULT CHARACTER SET = utf8
-          COLLATE = utf8_general_ci";
-  dbDelta($sql); 
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['segmentsconditions'] ." (
-            `ID` INT NOT NULL AUTO_INCREMENT,
-            `zbscondition_segmentid` INT NOT NULL,
-            `zbscondition_type` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL,
-            `zbscondition_op` VARCHAR(50) NULL,
-            `zbscondition_val` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL,
-            `zbscondition_val_secondary` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL,
-            PRIMARY KEY (`ID`))
-          ENGINE = InnoDB
-          DEFAULT CHARACTER SET = utf8
-          COLLATE = utf8_general_ci";
-  dbDelta($sql); 
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['segments'] ."(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `zbs_site` INT NULL DEFAULT NULL,
+  `zbs_team` INT NULL DEFAULT NULL,
+  `zbs_owner` INT NOT NULL,
+  `zbsseg_name` VARCHAR(120) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL,
+  `zbsseg_slug` VARCHAR(45) NOT NULL,
+  `zbsseg_matchtype` VARCHAR(10) NOT NULL,
+  `zbsseg_created` INT(14) NOT NULL,
+  `zbsseg_lastupdated` INT(14) NOT NULL,
+  `zbsseg_compilecount` INT NULL DEFAULT 0,
+  `zbsseg_lastcompiled` INT(14) NOT NULL,
+  PRIMARY KEY (`ID`))
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql); 
 
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['adminlog'] ." (
-      `ID` INT NOT NULL AUTO_INCREMENT,
-      `zbs_site` INT NULL DEFAULT NULL,
-      `zbs_team` INT NULL DEFAULT NULL,
-      `zbs_owner` INT NOT NULL,
-      `zbsadmlog_status` INT(3) NOT NULL,
-      `zbsadmlog_cat` VARCHAR(20) NULL DEFAULT NULL,
-      `zbsadmlog_str` VARCHAR(500) NULL DEFAULT NULL,
-      `zbsadmlog_time` INT(14) NULL DEFAULT NULL,
-      PRIMARY KEY (`ID`))
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8
-    COLLATE = utf8_general_ci";
-  dbDelta($sql); 
+  // Segments: Conditions
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['segmentsconditions'] ."(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `zbscondition_segmentid` INT NOT NULL,
+  `zbscondition_type` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL,
+  `zbscondition_op` VARCHAR(50) NULL,
+  `zbscondition_val` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL,
+  `zbscondition_val_secondary` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL,
+  PRIMARY KEY (`ID`))
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql); 
 
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['temphash'] ." (
+  // Admin Logs
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['adminlog'] ."(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `zbs_site` INT NULL DEFAULT NULL,
+  `zbs_team` INT NULL DEFAULT NULL,
+  `zbs_owner` INT NOT NULL,
+  `zbsadmlog_status` INT(3) NOT NULL,
+  `zbsadmlog_cat` VARCHAR(20) NULL DEFAULT NULL,
+  `zbsadmlog_str` VARCHAR(500) NULL DEFAULT NULL,
+  `zbsadmlog_time` INT(14) NULL DEFAULT NULL,
+  PRIMARY KEY (`ID`))
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql); 
+
+  // Temporary Hashes
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['temphash'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -293,45 +292,44 @@ COLLATE = utf8_general_ci";
   `zbstemphash_lastupdated` INT(14) NOT NULL,
   `zbstemphash_expiry` INT(14) NOT NULL,
   PRIMARY KEY (`ID`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-  dbDelta($sql); 
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql); 
 
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['objlinks'] ." (
-    `ID` INT NOT NULL AUTO_INCREMENT,
-    `zbs_site` INT NULL DEFAULT NULL,
-    `zbs_team` INT NULL DEFAULT NULL,
-    `zbs_owner` INT NOT NULL,
-    `zbsol_objtype_from` INT(4) NOT NULL,
-    `zbsol_objtype_to` INT(4) NOT NULL,
-    `zbsol_objid_from` INT NOT NULL,
-    `zbsol_objid_to` INT NOT NULL,
-    PRIMARY KEY (`ID`))
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8
-  COLLATE = utf8_general_ci";
-  dbDelta($sql); 
+  // Object Relationships (Links)
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['objlinks'] ."(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `zbs_site` INT NULL DEFAULT NULL,
+  `zbs_team` INT NULL DEFAULT NULL,
+  `zbs_owner` INT NOT NULL,
+  `zbsol_objtype_from` INT(4) NOT NULL,
+  `zbsol_objtype_to` INT(4) NOT NULL,
+  `zbsol_objid_from` INT NOT NULL,
+  `zbsol_objid_to` INT NOT NULL,
+  PRIMARY KEY (`ID`))
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql); 
 
-  
   #} AKA (Aliases)
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['aka'] ." (
-            `ID` INT NOT NULL AUTO_INCREMENT,
-            `aka_type` INT NULL,
-            `aka_id` INT NOT NULL,
-            `aka_alias` VARCHAR(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL,
-            `aka_created` INT(14) NULL,
-            `aka_lastupdated` INT(14) NULL,
-            PRIMARY KEY (`ID`))
-          ENGINE = InnoDB
-          DEFAULT CHARACTER SET = utf8
-          COLLATE = utf8_general_ci";
-
-  dbDelta($sql); 
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['aka'] ."(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `aka_type` INT NULL,
+  `aka_id` INT NOT NULL,
+  `aka_alias` VARCHAR(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL,
+  `aka_created` INT(14) NULL,
+  `aka_lastupdated` INT(14) NULL,
+  PRIMARY KEY (`ID`))
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql); 
   
   #} External sources
-  // NOTE:! Modified 2.97.5 migration
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['externalsources'] ." (
+  // NOTE:! Modified in 2.97.5 migration
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['externalsources'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -342,14 +340,13 @@ COLLATE = utf8_general_ci";
   `zbss_created` INT(14) NOT NULL,
   `zbss_lastupdated` INT(14) NOT NULL,
   PRIMARY KEY (`ID`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-
-  dbDelta($sql); 
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql); 
 
   #} Tracking (web hit info)
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['tracking'] ." (
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['tracking'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -366,14 +363,13 @@ COLLATE = utf8_general_ci";
   `zbst_created` INT(14) NOT NULL,
   `zbst_lastupdated` INT(14) NOT NULL,
   PRIMARY KEY (`ID`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-
-  dbDelta($sql); 
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql); 
 
   #} Logs
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['logs'] ." (
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['logs'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -386,36 +382,34 @@ COLLATE = utf8_general_ci";
   `zbsl_created` INT(14) NOT NULL,
   `zbsl_lastupdated` INT(14) NOT NULL,
   PRIMARY KEY (`ID`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-
-  dbDelta($sql); 
-
-
-  #} DB2 Migration BACKUP Tables - note 2 additional columns in each (wpID,zbsID) store related ID's
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['dbmigrationbkmeta'] ." (
-    `meta_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  
-    `wpID` bigint(20) unsigned NOT NULL,
-    `zbsID` bigint(20) unsigned NOT NULL,
-
-    `post_id` bigint(20) unsigned NOT NULL DEFAULT '0',
-    `meta_key` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-    `meta_value` longtext COLLATE utf8_general_ci,
-    PRIMARY KEY (`meta_id`),
-    KEY `post_id` (`post_id`),
-    KEY `meta_key` (`meta_key`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
-  dbDelta($sql); 
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql); 
 
 
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['dbmigrationbkposts'] ." (
-  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  
+  // Migration BACKUP Post Meta Table
+  // Note 2 additional columns in each (wpID,zbsID) store related ID's
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['dbmigrationbkmeta'] ."(
+  `meta_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `wpID` bigint(20) unsigned NOT NULL,
   `zbsID` bigint(20) unsigned NOT NULL,
+  `post_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `meta_key` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `meta_value` longtext COLLATE utf8_general_ci,
+  PRIMARY KEY (`meta_id`),
+  KEY `post_id` (`post_id`),
+  KEY `meta_key` (`meta_key`))
+  ".$storageEngineLine."
+  DEFAULT CHARSET=utf8
+  COLLATE=utf8_general_ci;";
+  zeroBSCRM_db_runDelta($sql); 
 
+  // Migration Backup Posts Tables
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['dbmigrationbkposts'] ."(
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `wpID` bigint(20) unsigned NOT NULL,
+  `zbsID` bigint(20) unsigned NOT NULL,
   `post_author` bigint(20) unsigned NOT NULL DEFAULT '0',
   `post_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `post_date_gmt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -442,174 +436,106 @@ COLLATE = utf8_general_ci";
   KEY `post_name` (`post_name`),
   KEY `type_status_date` (`post_type`,`post_status`,`post_date`,`ID`),
   KEY `post_parent` (`post_parent`),
-  KEY `post_author` (`post_author`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
-  dbDelta($sql); 
-
-/* pre wh #} SYSTEM EMAIL TEMPLATES 
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['system_mail_templates'] ." (
-        `ID` INT NOT NULL AUTO_INCREMENT,
-        `zbs_site` INT NULL DEFAULT NULL,
-        `zbs_team` INT NULL DEFAULT NULL,
-        `zbs_owner` INT NOT NULL,
-        `zbsmail_active` INT NOT NULL,
-        `zbsmail_id` INT NOT NULL,
-        `zbsmail_fromname` VARCHAR(200) NOT NULL,
-        `zbsmail_fromaddress` VARCHAR(200) NOT NULL,
-        `zbsmail_replyto` VARCHAR(200) NOT NULL,
-        `zbsmail_ccto` VARCHAR(200) NOT NULL,
-        `zbsmail_bccto` VARCHAR(200) NOT NULL,
-        `zbsmail_subject` VARCHAR(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL DEFAULT NULL,
-        `zbsmail_body` LONGTEXT NULL DEFAULT NULL,
-        `zbsmail_created` INT(14) NOT NULL,
-        `zbsmail_lastupdated` INT(14) NOT NULL,
-        PRIMARY KEY (`ID`))
-      ENGINE = InnoDB
-      DEFAULT CHARACTER SET = utf8
-      COLLATE = utf8_general_ci"; */
-
-  #} SYSTEM EMAIL TEMPLATES 
-  // wh notes: have left all these fields in for now (perhaps later we can add overrides for speed? 
-  //(would be better to use mail delivery tbh))
-  //... still, for now they're 'dummy' - do nout
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['system_mail_templates'] ." (
-        `ID` INT NOT NULL AUTO_INCREMENT,
-        `zbs_site` INT NULL DEFAULT NULL,
-        `zbs_team` INT NULL DEFAULT NULL,
-        `zbs_owner` INT NOT NULL,
-        `zbsmail_active` INT NOT NULL,
-        `zbsmail_id` INT NOT NULL,
-        `zbsmail_deliverymethod` VARCHAR(200) NOT NULL,
-        `zbsmail_fromname` VARCHAR(200) NULL,
-        `zbsmail_fromaddress` VARCHAR(200) NULL,
-        `zbsmail_replyto` VARCHAR(200) NULL,
-        `zbsmail_ccto` VARCHAR(200) NULL,
-        `zbsmail_bccto` VARCHAR(200) NULL,
-        `zbsmail_subject` VARCHAR(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL DEFAULT NULL,
-        `zbsmail_body` LONGTEXT NULL DEFAULT NULL,
-        `zbsmail_created` INT(14) NOT NULL,
-        `zbsmail_lastupdated` INT(14) NOT NULL,
-        PRIMARY KEY (`ID`))
-      ENGINE = InnoDB
-      DEFAULT CHARACTER SET = utf8
-      COLLATE = utf8_general_ci";
-  dbDelta($sql);
+  KEY `post_author` (`post_author`)) 
+  ".$storageEngineLine."
+  DEFAULT CHARSET=utf8 
+  COLLATE=utf8_general_ci;";
+  zeroBSCRM_db_runDelta($sql); 
 
 
+  // System Email Templates
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['system_mail_templates'] ."(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `zbs_site` INT NULL DEFAULT NULL,
+  `zbs_team` INT NULL DEFAULT NULL,
+  `zbs_owner` INT NOT NULL,
+  `zbsmail_active` INT NOT NULL,
+  `zbsmail_id` INT NOT NULL,
+  `zbsmail_deliverymethod` VARCHAR(200) NOT NULL,
+  `zbsmail_fromname` VARCHAR(200) NULL,
+  `zbsmail_fromaddress` VARCHAR(200) NULL,
+  `zbsmail_replyto` VARCHAR(200) NULL,
+  `zbsmail_ccto` VARCHAR(200) NULL,
+  `zbsmail_bccto` VARCHAR(200) NULL,
+  `zbsmail_subject` VARCHAR(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL DEFAULT NULL,
+  `zbsmail_body` LONGTEXT NULL DEFAULT NULL,
+  `zbsmail_created` INT(14) NOT NULL,
+  `zbsmail_lastupdated` INT(14) NOT NULL,
+  PRIMARY KEY (`ID`))
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql);
 
-  /* pre wh #} SYSTEM EMAIL HISTORY 
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['system_mail_hist'] ." (
-        `ID` INT NOT NULL AUTO_INCREMENT,
-        `zbs_site` INT NULL DEFAULT NULL,
-        `zbs_team` INT NULL DEFAULT NULL,
-        `zbs_owner` INT NOT NULL,
-        `zbs_emailID` INT NOT NULL,                 ==> zbsmail_type
-        `zbsmail_useremail` VARCHAR(200) NOT NULL,  ==> zbsmail_sender_email
-        `zbsmail_sent` INT NOT NULL, 
-        `zbsmail_who` INT NOT NULL,                 ==> zbsmail_sender_wpid   
-        `zbsmail_userID` INT NOT NULL,              ==> zbsmail_target_objid
-        `zbsmail_itemid` INT NOT NULL,              ==> zbsmail_assoc_objid (e.g. invoice id)
-        `zbsmail_subject` VARCHAR(200),
+  // System Email History
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['system_mail_hist'] ."(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `zbs_site` int(11) DEFAULT NULL,
+  `zbs_team` int(11) DEFAULT NULL,
+  `zbs_owner` int(11) NOT NULL,
+  `zbsmail_type` int(11) NOT NULL,
+  `zbsmail_sender_thread` int(11) NOT NULL,
+  `zbsmail_sender_email` varchar(200) NOT NULL,
+  `zbsmail_sender_wpid` int(11) NOT NULL,
+  `zbsmail_sender_mailbox_id` int(11) NOT NULL,
+  `zbsmail_sender_mailbox_name` varchar(200) DEFAULT NULL,
+  `zbsmail_receiver_email` varchar(200) NOT NULL,
+  `zbsmail_sent` int(11) NOT NULL,
+  `zbsmail_target_objid` int(11) NOT NULL,
+  `zbsmail_assoc_objid` int(11) NOT NULL,
+  `zbsmail_subject` varchar(200) DEFAULT NULL,
+  `zbsmail_content` longtext,
+  `zbsmail_hash` varchar(128) DEFAULT NULL,
+  `zbsmail_status` varchar(120) DEFAULT NULL,
+  `zbsmail_starred` int(11) DEFAULT NULL,
+  `zbsmail_opened` int(11) NOT NULL,
+  `zbsmail_clicked` int(11) NOT NULL,
+  `zbsmail_firstopened` int(14) NOT NULL,
+  `zbsmail_lastopened` int(14) NOT NULL,
+  `zbsmail_lastclicked` int(14) NOT NULL,
+  `zbsmail_created` int(14) NOT NULL,
+  PRIMARY KEY (`ID`))
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql); 
 
-        `zbsmail_opened` INT NOT NULL,
-        `zbsmail_clicked` INT NOT NULL,
-        `zbsmail_created` INT(14) NOT NULL,
-
-        ++ zbsmail_hash
-        ++ zbsmail_lastopened
-        ++ zbsmail_lastclicked
-
-        PRIMARY KEY (`ID`))
-      ENGINE = InnoDB
-      DEFAULT CHARACTER SET = utf8
-      COLLATE = utf8_general_ci";
-  */
-  #} SYSTEM EMAIL HISTORY 
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['system_mail_hist'] ." (
-        `ID` INT NOT NULL AUTO_INCREMENT,
-        `zbs_site` int(11) DEFAULT NULL,
-        `zbs_team` int(11) DEFAULT NULL,
-        `zbs_owner` int(11) NOT NULL,
-        `zbsmail_type` int(11) NOT NULL,
-        `zbsmail_sender_thread` int(11) NOT NULL,
-        `zbsmail_sender_email` varchar(200) NOT NULL,
-        `zbsmail_sender_wpid` int(11) NOT NULL,
-        `zbsmail_sender_mailbox_id` int(11) NOT NULL,
-        `zbsmail_sender_mailbox_name` varchar(200) DEFAULT NULL,
-        `zbsmail_receiver_email` varchar(200) NOT NULL,
-        `zbsmail_sent` int(11) NOT NULL,
-        `zbsmail_target_objid` int(11) NOT NULL,
-        `zbsmail_assoc_objid` int(11) NOT NULL,
-        `zbsmail_subject` varchar(200) DEFAULT NULL,
-        `zbsmail_content` longtext,
-        `zbsmail_hash` varchar(128) DEFAULT NULL,
-        `zbsmail_status` varchar(120) DEFAULT NULL,
-        `zbsmail_starred` int(11) DEFAULT NULL,
-        `zbsmail_opened` int(11) NOT NULL,
-        `zbsmail_clicked` int(11) NOT NULL,
-        `zbsmail_firstopened` int(14) NOT NULL,
-        `zbsmail_lastopened` int(14) NOT NULL,
-        `zbsmail_lastclicked` int(14) NOT NULL,
-        `zbsmail_created` int(14) NOT NULL,
-        PRIMARY KEY (`ID`))
-      ENGINE = InnoDB
-      DEFAULT CHARACTER SET = utf8
-      COLLATE = utf8_general_ci";
-  dbDelta($sql); 
-
-
-  #} Email Sending Record
-
-
-  #} CRON manager
-  /* we don't need this level of heirachy for the cron manager in zbs (from app.)
-  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['cronmanager'] ." (
-        `cmid` INT NOT NULL AUTO_INCREMENT,
-        `crondate` VARCHAR(30) NOT NULL,
-        `cronslot` VARCHAR(45) NOT NULL,
-        `cronfirecount` INT(3) NOT NULL,
-        `cronlastfired` INT(14) NOT NULL,
-        PRIMARY KEY (`cmid`))
-      ENGINE = InnoDB
-      DEFAULT CHARACTER SET = utf8
-      COLLATE = utf8_general_ci";
-    dbDelta($sql); */
-
-   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['cronmanagerlogs'] ." (
-        `ID` INT NOT NULL AUTO_INCREMENT,
-        `zbs_site` int(11) DEFAULT NULL,
-        `zbs_team` int(11) DEFAULT NULL,
-        `zbs_owner` int(11) NOT NULL,
-        `job` VARCHAR(100) NOT NULL,
-        `jobstatus` INT(3) NULL,
-        `jobstarted` INT(14) NOT NULL,
-        `jobfinished` INT(14) NOT NULL,
-        `jobnotes` LONGTEXT NULL,
-        PRIMARY KEY (`ID`))
-      ENGINE = InnoDB
-      DEFAULT CHARACTER SET = utf8
-      COLLATE = utf8_general_ci";
-    dbDelta($sql);
+  // cron Manager Logs
+   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['cronmanagerlogs'] ."(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `zbs_site` int(11) DEFAULT NULL,
+  `zbs_team` int(11) DEFAULT NULL,
+  `zbs_owner` int(11) NOT NULL,
+  `job` VARCHAR(100) NOT NULL,
+  `jobstatus` INT(3) NULL,
+  `jobstarted` INT(14) NOT NULL,
+  `jobfinished` INT(14) NOT NULL,
+  `jobnotes` LONGTEXT NULL,
+  PRIMARY KEY (`ID`))
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql);
 
   
-    // Create tax table for invoicing
-    $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['tax'] ." (
-      `ID` INT NOT NULL AUTO_INCREMENT,
-      `zbs_site` int(11) DEFAULT NULL,
-      `zbs_team` int(11) DEFAULT NULL,
-      `zbs_owner` int(11) NOT NULL,
-      `zbsc_tax_name` VARCHAR(100) NULL,
-      `zbsc_rate` DECIMAL(18,2) NOT NULL DEFAULT 0.00,
-      `zbsc_created` INT(14) NOT NULL,
-      `zbsc_lastupdated` INT(14) NOT NULL,
-      PRIMARY KEY (`ID`))
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8
-    COLLATE = utf8_general_ci"; 
-    dbDelta($sql); 
+  // Tax Table
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['tax'] ."(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `zbs_site` int(11) DEFAULT NULL,
+  `zbs_team` int(11) DEFAULT NULL,
+  `zbs_owner` int(11) NOT NULL,
+  `zbsc_tax_name` VARCHAR(100) NULL,
+  `zbsc_rate` DECIMAL(18,2) NOT NULL DEFAULT 0.00,
+  `zbsc_created` INT(14) NOT NULL,
+  `zbsc_lastupdated` INT(14) NOT NULL,
+  PRIMARY KEY (`ID`))
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";"; 
+  zeroBSCRM_db_runDelta($sql); 
 
-    // DB3.0+
-   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['companies'] ." (
+  // Companies (DB3.0+)
+   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['companies'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -644,15 +570,13 @@ COLLATE = utf8_general_ci";
   INDEX `name` (`zbsco_name` ASC),
   INDEX `email` (`zbsco_email` ASC),
   INDEX `created` (`zbsco_created` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-    // #V3REMOVEDFORRC1:
-    // FULLTEXT INDEX `name` (`zbsco_name` ASC),
-    dbDelta($sql);
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql);
 
-
-   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['events'] ." (
+  // Events (DB3.0+)
+   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['events'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -671,15 +595,13 @@ COLLATE = utf8_general_ci";
   INDEX `startint` (`zbse_start` ASC),
   INDEX `endint` (`zbse_end` ASC),
   INDEX `created` (`zbse_created` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-    // #V3REMOVEDFORRC1:
-    // FULLTEXT INDEX `title` (`zbse_title` ASC),
-    dbDelta($sql);
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql);
 
-
-   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['eventreminders'] ." (
+  // Event Reminders (DB3.0+)
+   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['eventreminders'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -690,13 +612,13 @@ COLLATE = utf8_general_ci";
   `zbser_created` INT(14) NOT NULL,
   `zbser_lastupdated` INT(14) NULL DEFAULT NULL,
   PRIMARY KEY (`ID`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-    dbDelta($sql);
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql);
 
-
-   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['forms'] ." (
+  // Forms
+   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['forms'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -726,15 +648,13 @@ COLLATE = utf8_general_ci";
   PRIMARY KEY (`ID`),
   INDEX `title` (`zbsf_title` ASC),
   INDEX `created` (`zbsf_created` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-    // #V3REMOVEDFORRC1:
-    // FULLTEXT INDEX `title` (`zbsf_title` ASC),
-    dbDelta($sql);
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql);
 
-
-   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['invoices'] ." (
+  // Invoices
+   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['invoices'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -781,14 +701,13 @@ COLLATE = utf8_general_ci";
   INDEX `status` (`zbsi_status` ASC),
   INDEX `hash` (`zbsi_hash` ASC),
   INDEX `created` (`zbsi_created` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-    // #V3REMOVEDFORRC1:
-    // FULLTEXT INDEX `idoverride` (`zbsi_id_override` ASC),
-    dbDelta($sql);
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql);
 
-   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['lineitems'] ." (
+  // Line Items (DB3.0+)
+   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['lineitems'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -813,13 +732,13 @@ COLLATE = utf8_general_ci";
   PRIMARY KEY (`ID`),
   INDEX `order` (`zbsli_order` ASC),
   INDEX `created` (`zbsli_created` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-    dbDelta($sql);
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql);
     
-
-   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['quotes'] ." (
+  // Quotes (DB3.0+)
+   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['quotes'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -847,15 +766,13 @@ COLLATE = utf8_general_ci";
   INDEX `hash` (`zbsq_hash` ASC),
   INDEX `created` (`zbsq_created` ASC),
   INDEX `accepted` (`zbsq_accepted` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-    // #V3REMOVEDFORRC1:
-    // FULLTEXT INDEX `title` (`zbsq_title` ASC),
-    dbDelta($sql);
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql);
     
-
-   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['quotetemplates'] ." (
+  // Quote Templates (DB3.0+)
+   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['quotetemplates'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -872,14 +789,13 @@ COLLATE = utf8_general_ci";
   PRIMARY KEY (`ID`),
   INDEX `title` (`zbsqt_title` ASC),
   INDEX `created` (`zbsqt_created` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-    // #V3REMOVEDFORRC1:
-    // FULLTEXT INDEX `title` (`zbsqt_title` ASC),
-    dbDelta($sql);
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql);
     
-   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['transactions'] ." (
+  // Transactions (DB3.0+)
+   $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['transactions'] ."(
   `ID` INT NOT NULL AUTO_INCREMENT,
   `zbs_site` INT NULL DEFAULT NULL,
   `zbs_team` INT NULL DEFAULT NULL,
@@ -918,54 +834,45 @@ COLLATE = utf8_general_ci";
   INDEX `date` (`zbst_date` ASC),
   INDEX `title` (`zbst_title` ASC),
   INDEX `created` (`zbst_created` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci";
-    // #V3REMOVEDFORRC1:
-    // FULLTEXT INDEX `title` (`zbst_title` ASC),
-    dbDelta($sql);
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";";
+  zeroBSCRM_db_runDelta($sql);
 
-    // Create security log table (stops repeat brute-forcing quote/inv hashes etc.)
-    $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['security_log'] ." (
-      `ID` INT NOT NULL AUTO_INCREMENT,
-      `zbs_site` INT NULL DEFAULT NULL,
-      `zbs_team` INT NULL DEFAULT NULL,
-      `zbs_owner` INT NOT NULL,
-      `zbssl_reqtype` VARCHAR(20) NOT NULL,
-      `zbssl_ip` VARCHAR(200) NULL DEFAULT NULL,
-      `zbssl_reqhash` VARCHAR(128) NULL DEFAULT NULL,
-      `zbssl_reqid` INT(11) NULL DEFAULT NULL,
-      `zbssl_loggedin_id` INT(11) NULL DEFAULT NULL,
-      `zbssl_reqstatus` INT(1) NULL DEFAULT NULL,
-      `zbssl_reqtime` INT(14) NULL DEFAULT NULL,
-      PRIMARY KEY (`ID`))
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8
-    COLLATE = utf8_general_ci"; 
-    dbDelta($sql); 
+  // Security logs (used to stop repeat brute-forcing quote/inv hashes etc.)
+  $sql = "CREATE TABLE IF NOT EXISTS ". $ZBSCRM_t['security_log'] ."(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `zbs_site` INT NULL DEFAULT NULL,
+  `zbs_team` INT NULL DEFAULT NULL,
+  `zbs_owner` INT NOT NULL,
+  `zbssl_reqtype` VARCHAR(20) NOT NULL,
+  `zbssl_ip` VARCHAR(200) NULL DEFAULT NULL,
+  `zbssl_reqhash` VARCHAR(128) NULL DEFAULT NULL,
+  `zbssl_reqid` INT(11) NULL DEFAULT NULL,
+  `zbssl_loggedin_id` INT(11) NULL DEFAULT NULL,
+  `zbssl_reqstatus` INT(1) NULL DEFAULT NULL,
+  `zbssl_reqtime` INT(14) NULL DEFAULT NULL,
+  PRIMARY KEY (`ID`))
+  ".$storageEngineLine."
+  DEFAULT CHARACTER SET = ".$characterSet."
+  COLLATE = ".$collation.";"; 
+  zeroBSCRM_db_runDelta($sql); 
 
-}
-
-// Retrieves mysql Version info 
-// Note: not reliable 100%?
-// https://github.com/woocommerce/woocommerce/issues/11320
-function zeroBSCRM_database_getVersion(){
-
-  global $wpdb;
-
-  $mysqlVersion = false;
-
-  if ( empty( $wpdb->use_mysqli ) ) {
-
-      $mysqlVersion = mysql_get_server_info();
-
-  } else {
-
-      $mysqlVersion = mysqli_get_server_info( $wpdb->dbh );
-
+  // if any errors, log to wp option (potentially can't save to our zbs settings table because may not exist)
+  $errors = $zbsDB_creationErrors;
+  if (is_array($errors)){
+    if (count($errors) > 0) 
+      update_option( 'zbs_db_creation_errors', array('lasttried' => time(),'errors' => $errors));
+    else
+      delete_option( 'zbs_db_creation_errors' ); // successful run kills the alert
   }
 
-  return $mysqlVersion;
+  // no longer needed
+  unset($zbsDB_lastError,$zbsDB_creationErrors);
+
+  // return any errors encountered
+  return $errors;
+
 
 }
 
@@ -999,10 +906,84 @@ function zeroBSCRM_checkTablesExist(){
   return $create;
 
 }
+
+
+/**
+ * Attempts to run $sql through dbDelta, adding any errors to the stack as it encounters them
+ *
+ */
+function zeroBSCRM_db_runDelta($sql=''){
+  
+    global $wpdb,$zbsDB_lastError,$zbsDB_creationErrors;
+  
+    // enact
+    dbDelta($sql);
+
+    // catch any (new) errors
+    if (isset($wpdb->last_error) && $wpdb->last_error !== $zbsDB_lastError) {
+      
+      // add to the stack
+      $zbsDB_creationErrors[] = $wpdb->last_error;
+
+      // clock it as latest error
+      $zbsDB_lastError = $wpdb->last_error;
+
+    }
+
+}
  
+/**
+ * returns availability of InnoDB MySQL Storage Engine
+ *
+ *  gh-470, some users on some installs did not have InnoDB
+ *  Used in table creation to force InnoDB use where possible,
+ *  ... and also used to expose availability via System Status UI
+ *
+ * @return bool (if InnoDB available)
+ */
+function zeroBSCRM_DB_canInnoDB(){
+
+    global $wpdb;
+
+    // attempt to cycle through MySQL's ENGINES & discern InnoDB
+    $availableStorageEngines = $wpdb->get_results('SHOW ENGINES');
+    if (is_array($availableStorageEngines)) foreach ($availableStorageEngines as $engine){
+
+        if (is_object($engine) && isset($engine->Engine) && $engine->Engine == 'InnoDB') return true;
+
+    }
+
+    return false;
+
+}
+
+/**
+ * Retrieves mysql Version info 
+ * Note: not reliable 100%?
+ * https://github.com/woocommerce/woocommerce/issues/11320
+ */
+function zeroBSCRM_database_getVersion(){
+
+  global $wpdb;
+
+  $mysqlVersion = false;
+
+  if ( empty( $wpdb->use_mysqli ) ) {
+
+      $mysqlVersion = mysql_get_server_info();
+
+  } else {
+
+      $mysqlVersion = mysqli_get_server_info( $wpdb->dbh );
+
+  }
+
+  return $mysqlVersion;
+
+}
 
 /* ======================================================
-  / API database
+  / Table Creation
    ====================================================== */
 
 

@@ -1285,10 +1285,8 @@ function zbs_invoice_pdf(){
             #} PDF Install check: 
             zeroBSCRM_extension_checkinstall_pdfinv();
 
-    		#} Require DOMPDF
-    		#} ONLY once it's needed
-    		require_once(ZEROBSCRM_PATH . 'includes/lib/dompdf-0-8-2/autoload.inc.php');
-
+    		#} Require DOMPDF    	
+            $zbs->libLoad('dompdf');
 
     		#use Dompdf\Options;
     		#use Dompdf\Dompdf;
@@ -1427,9 +1425,8 @@ function zeroBSCRM_generateInvoicePDFFile($invoiceID=-1){
         #} PDF Install check: 
         zeroBSCRM_extension_checkinstall_pdfinv();
 
-        #} Require DOMPDF
-        #} ONLY once it's needed
-        require_once(ZEROBSCRM_PATH . 'includes/lib/dompdf-0-8-2/autoload.inc.php');
+        #} Require DOMPDF       
+        $zbs->libLoad('dompdf');
 
         #use Dompdf\Options;
         #use Dompdf\Dompdf;
@@ -1500,10 +1497,8 @@ function zeroBSCRM_invoicing_generateStatementPDF($contactID=-1,$returnPDF=false
     #} PDF Install check: 
     zeroBSCRM_extension_checkinstall_pdfinv();
 
-    #} require DOMPDF
-    #} ONLY once it's needed
-    require_once(ZEROBSCRM_PATH . 'includes/lib/dompdf-0-8-2/autoload.inc.php');
-
+    #} Require DOMPDF       
+    $zbs->libLoad('dompdf');
 
     #} Check ID
     $contactID = (int)$contactID;

@@ -9,8 +9,8 @@
  * Date: 15/02/2020
  */
 
-#} Require DOMPDF
-if (file_exists(ZEROBSCRM_PATH . 'includes/lib/dompdf-0-8-2/autoload.inc.php')) require_once(ZEROBSCRM_PATH . 'includes/lib/dompdf-0-8-2/autoload.inc.php');
+#} Require DOMPDF    	
+$zbs->libLoad('dompdf');
 
 #} Required
 use FontLib\Font;

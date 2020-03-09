@@ -22,6 +22,39 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
+#. Placeholders to be localised:
+#: ZeroBSCRM.DAL3.Obj.Contacts.php*
+msgid "e.g. john@gmail.com"
+msgstr ""
+
+msgid "e.g. John"
+msgstr ""
+
+msgid "e.g. Doe"
+msgstr ""
+
+msgid "e.g. New York"
+msgstr ""
+
+msgid "e.g. Kings County"
+msgstr ""
+
+msgid "e.g. 10019"
+msgstr ""
+
+msgid "e.g. Los Angeles"
+msgstr ""
+
+msgid "e.g. 90001"
+msgstr ""
+
+msgid "e.g. 877 2733049"
+msgstr ""
+
+#. Mobile equivilent
+msgid "e.g. 877 2733050"
+msgstr ""
+
 #: ZeroBSCRM.php:434 includes/ZeroBSCRM.AdminPages.php:2378
 #: includes/ZeroBSCRM.AdminPages.php:3380 includes/ZeroBSCRM.Core.Menus.php:102
 #, fuzzy

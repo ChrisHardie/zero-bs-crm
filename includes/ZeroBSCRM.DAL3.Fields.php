@@ -49,9 +49,9 @@
         $zbsAddressFields = array(
             'addr1' => array('text', __('Address Line 1',"zero-bs-crm"),'','area'=>'Main Address'),
             'addr2' => array('text',__('Address Line 2',"zero-bs-crm"),'','area'=>'Main Address'),
-            'city' => array('text',__('City',"zero-bs-crm"),'e.g. London','area'=>'Main Address'),
-            'county' => array('text',__('County',"zero-bs-crm"),'e.g. Greater London','area'=>'Main Address'),
-            'postcode' => array('text',__('Postcode',"zero-bs-crm"),'e.g. E1 9XJ','area'=>'Main Address'),
+            'city' => array('text',__('City',"zero-bs-crm"),'e.g. New York','area'=>'Main Address'),
+            'county' => array('text',__('County',"zero-bs-crm"),'e.g. Kings County','area'=>'Main Address'),
+            'postcode' => array('text',__('Postcode',"zero-bs-crm"),'e.g. 10019','area'=>'Main Address'),
             'country' => array('text',__('Country',"zero-bs-crm"),'e.g. UK','area'=>'Main Address'),
 
         );

@@ -265,7 +265,7 @@ function zeroBSCRM_pages_admin_view_page_contact($id = -1){
 
                   ?>
 
-                  <div id="zbs-vital-menu">
+                  <div id="zbs-vitals-box">
                     <div class="ui top attached tabular menu">
                       <div data-tab="vitals" class="<?php if (!isset($activeVitalsTab)) { echo 'active '; $activeVitalsTab = 'vitals'; } ?>item"><?php 
 
@@ -952,8 +952,8 @@ function zeroBSCRM_pages_admin_view_page_contact($id = -1){
                                     }
 
                                     $taskURL = zbsLink('edit',$task['id'],ZBS_TYPE_EVENT);
-                                    $statusStr = __('Incomplete','zero-bs-crm'); if (isset($task['complete']) && $task['complete']) $statusStr = __('Completed','zero-bs-crm');
-                                    $status = "<span class='".zeroBSCRM_html_taskStatusLabel($invoice)."'>" . $statusStr . "</span>";
+                                    $statusStr = __('Incomplete','zero-bs-crm'); if (isset($task['complete']) && $task['complete'] === 1) $statusStr = __('Completed','zero-bs-crm');
+                                    $status = "<span class='".zeroBSCRM_html_taskStatusLabel($task)."'>" . $statusStr . "</span>";
                                     
                                     echo "<tr>";
                                       echo "<td>" . zeroBSCRM_html_taskDate($task) . "</td>";
@@ -973,7 +973,7 @@ function zeroBSCRM_pages_admin_view_page_contact($id = -1){
 
                                   ?><tr>
                                       <td colspan="4">
-                                          <div class="ui info icon message" id="zbsNoInvoiceResults">
+                                          <div class="ui info icon message" id="zbsNoTaskResults">
                                             <div class="content">
                                               <div class="header"><?php _e('No Tasks',"zero-bs-crm"); ?></div>
                                               <p><?php _e('This contact does not have any tasks yet, do you want to',"zero-bs-crm"); echo ' <a href="'.$newURL.'" class="">'.__('Create one',"zero-bs-crm").'</a>?'; ?></p>
@@ -1390,14 +1390,9 @@ function zeroBSCRM_pages_admin_view_page_company($id = -1){
           $useQuotes = false; //not yet $useQuotes = zeroBSCRM_getSetting('feat_quotes');
           $useInvoices = zeroBSCRM_getSetting('feat_invs');
           $useTrans = zeroBSCRM_getSetting('feat_transactions');
+          $useTasks = false; if ($zbs->isDAL3()) $useTasks = zeroBSCRM_getSetting('feat_calendar'); // v3+
 
-          #} Get screen options for user
-          $screenOpts = $zbs->userScreenOptions();
-
-          #} get our single company info
-              //DAL3?
-              if ($zbs->isDAL3())
-                $zbsCompanyObj = $zbs->DAL->companies->getCompany($id,array(
+          $args = array(
                       'withCustomFields'  => true,
                       'withQuotes'        => true,
                       'withInvoices'      => true,
@@ -1408,7 +1403,18 @@ function zeroBSCRM_pages_admin_view_page_company($id = -1){
                       'withOwner'         => true,
                       'withValues'        => true,
                       'withContacts'      => true,
-                  ));
+                  );
+
+          // get tasks if using
+          if ($useTasks) $args['withTasks'] = true;
+
+          #} Get screen options for user
+          $screenOpts = $zbs->userScreenOptions();
+
+          #} get our single company info
+              //DAL3?
+              if ($zbs->isDAL3())
+                $zbsCompanyObj = $zbs->DAL->companies->getCompany($id,$args);
               else
                 $zbsCompanyObj = zeroBS_getCompany($id,true);
 
@@ -1573,7 +1579,7 @@ function zeroBSCRM_pages_admin_view_page_company($id = -1){
 
               ?>
 
-              <div id="zbs-vital-menu">
+              <div id="zbs-vitals-box">
                 <div class="ui top attached tabular menu">
                   <div data-tab="vitals" class="<?php if (!isset($activeVitalsTab)) { echo 'active '; $activeVitalsTab = 'vitals'; } ?>item"><?php 
 
@@ -1804,62 +1810,8 @@ function zeroBSCRM_pages_admin_view_page_company($id = -1){
                       <?php if ($useInvoices == "1"){ ?><div data-tab="invoices" class="<?php if (!isset($activeTab)) { echo 'active '; $activeTab = 'invoices'; } ?>item"><?php _e('Invoices',"zero-bs-crm"); ?></div><?php } ?>                      
                       <?php if ($useTrans == "1"){ ?><div data-tab="transactions" class="<?php if (!isset($activeTab)) { echo 'active '; $activeTab = 'transactions'; } ?>item"><?php _e('Transactions',"zero-bs-crm"); ?></div><?php } ?>
                       <div data-tab="files" class="<?php if (!isset($activeTab)) { echo 'active '; $activeTab = 'files'; } ?>item"><?php _e('Files','zero-bs-crm'); ?></div>                    
+                      <?php if ($useTasks == "1"){ ?><div data-tab="tasks" class="<?php if (!isset($activeTab)) { echo 'active '; $activeTab = 'tasks'; } ?>item"><?php _e('Tasks',"zero-bs-crm"); ?></div><?php } ?>
                     </div>
-                    <?php /*if ($useQuotes == "1"){ ?>
-                    <div class="ui bottom attached <?php if ($activeTab == 'quotes') echo 'active '; ?>tab segment" data-tab="quotes">
-                        <table class="ui celled table">
-                              <thead>
-                                  <th><?php _e("ID & Title","zero-bs-crm"); ?></th>
-                                  <th><?php _e("Date","zero-bs-crm"); ?></th>
-                                  <th><?php _e("Value","zero-bs-crm"); ?></th>
-                                  <th><?php _e("Status","zero-bs-crm"); ?></th>
-                              </thead>
-                              <tbody>
-                                <?php
-                                if (count($zbsCustomer['quotes']) > 0){
-
-                                  foreach($zbsCustomer['quotes'] as $quote){
-
-                                    $idRefStr = ''; 
-                                    if (isset($quote['zbsid'])) $idRefStr = '#'.$quote['zbsid'];
-                                    if (isset($quote['meta']) && isset($quote['meta']['ref'])) {
-                                      if (!empty($idRefStr)) $idRefStr .= ' -';
-                                      $idRefStr .= ' '.$quote['meta']['ref'];
-                                    }
-
-                                    $qVal = '-'; 
-                                    if (isset($quote['meta']['val'])) $qVal = $quote['meta']['val'];
-                                    if ($qVal != '-' && !empty($qVal)) $qVal = zeroBSCRM_formatCurrency($qVal);
-
-                                    echo "<tr>";
-                                      echo '<td><a href="'.admin_url('post.php?action=edit&post='.$quote['id']).'">' . $idRefStr . "</a></td>";
-                                      echo "<td>" . zeroBSCRM_html_QuoteDate($quote) . "</td>";
-                                      echo "<td>" . $qVal . "</td>";
-                                      echo "<td><span class='".zeroBSCRM_html_quoteStatusLabel($quote)."'>" . zeroBS_getQuoteStatus($quote,false) . "</span></td>";
-                                    echo "</tr>"; 
-                                  }
-
-                                } else {
-
-                                  // empty, create?
-                                  ?><tr>
-                                      <td colspan="4">
-                                          <div class="ui info icon message" id="zbsNoQuoteResults">
-                                            <div class="content">
-                                              <div class="header"><?php _e('No Quotes',"zero-bs-crm"); ?></div>
-                                              <p><?php _e('This contact does not have any quotes yet, do you want to',"zero-bs-crm"); echo ' <a href="'.admin_url('post-new.php?post_type=zerobs_quote&zbsprefillcust='.$zbsCustomer['id']).'" class="">'.__('Create one',"zero-bs-crm").'</a>?'; ?></p>
-                                            </div>
-                                          </div>
-                                      </td>
-                                    </tr><?php
-
-                                }
-
-                                ?>
-
-                              </tbody>
-                            </table>
-                    </div><?php } ?> */ ?>
 
                     <?php if ($useInvoices == "1"){ ?>
                     <div class="ui bottom attached <?php if ($activeTab == 'invoices') echo 'active '; ?>tab segment" data-tab="invoices">
@@ -2094,6 +2046,85 @@ function zeroBSCRM_pages_admin_view_page_company($id = -1){
                         <div id="zbsFileActionOutput" style="display:none"></div>
                       </div>
 
+                      <?php if ($useTasks == "1"){ ?>
+                      <div class="ui bottom attached <?php if ($activeTab == 'tasks') echo 'active '; ?>tab segment" data-tab="tasks">
+                          <table class="ui celled table unstackable">
+                                <thead>
+                                    <th><?php _e("Date","zero-bs-crm"); ?></th>
+                                    <th><?php _e("Task","zero-bs-crm"); ?></th>
+                                    <th><?php _e("Status","zero-bs-crm"); ?></th>
+                                    <th><?php _e("View","zero-bs-crm"); ?></th>
+                                </thead>
+                                <tbody>
+                                  <?php
+                                  if (isset($zbsCompany['tasks']) && is_array($zbsCompany['tasks']) && count($zbsCompany['tasks']) > 0){
+
+                                    $lastTaskStart = -1; $upcomingOutput = false;
+
+                                    foreach ($zbsCompany['tasks'] as $task){
+
+                                      // if the first task is upcoming, add a header
+                                      if (!$upcomingOutput && $task['start'] > time()){
+
+                                        // tried to use horizontal divider here, but there's a semantic bug
+                                        // ... when using these in tables. https://semantic-ui.com/elements/divider.html
+                                        // ... adding display:block to the td fixes, but then colspan doesn't work. Skipping for now
+                                        echo '<tr><td colspan="4"><div class="ui horizontal divider">'.__('Upcoming Tasks','zero-bs-crm').'</div></td></tr>';
+
+                                        // shown
+                                        $upcomingOutput = true;
+
+                                      }
+
+                                      // if there are tasks in future, and past, draw a line between
+                                      if ($lastTaskStart > 0 && $lastTaskStart > time() && $task['end'] < time()){
+
+
+                                        // tried to use horizontal divider here, but there's a semantic bug
+                                        // ... when using these in tables. https://semantic-ui.com/elements/divider.html
+                                        // ... adding display:block to the td fixes, but then colspan doesn't work. Skipping for now
+                                        echo '<tr><td colspan="4"><div class="ui horizontal divider">'.__('Past Tasks','zero-bs-crm').'</div></td></tr>';
+
+                                      }
+
+                                      $taskURL = zbsLink('edit',$task['id'],ZBS_TYPE_EVENT);
+                                      $statusStr = __('Incomplete','zero-bs-crm'); if (isset($task['complete']) && $task['complete'] == 1) $statusStr = __('Completed','zero-bs-crm');
+                                      $status = "<span class='".zeroBSCRM_html_taskStatusLabel($task)."'>" . $statusStr . "</span>";
+                                      
+                                      echo "<tr>";
+                                        echo "<td>" . zeroBSCRM_html_taskDate($task) . "</td>";
+                                        echo "<td>" . $task['title'] . "</td>";
+                                        echo "<td>".$status."</td>";
+                                        echo '<td style="text-align:center"><a href="'.$taskURL.'">' . __('View','zero-bs-crm') . "</a></td>";
+                                      echo "</tr>"; 
+
+                                      $lastTaskStart = $task['start'];
+
+                                    }
+
+                                  } else {
+
+                                    // empty, create?
+                                    $newURL = zbsLink('create',-1,ZBS_TYPE_EVENT).'&zbsprefillco='.$zbsCompany['id'];
+
+                                    ?><tr>
+                                        <td colspan="4">
+                                            <div class="ui info icon message" id="zbsNoTaskResults">
+                                              <div class="content">
+                                                <div class="header"><?php _e('No Tasks',"zero-bs-crm"); ?></div>
+                                                <p><?php _e('This company does not have any tasks yet, do you want to',"zero-bs-crm"); echo ' <a href="'.$newURL.'" class="">'.__('Create one',"zero-bs-crm").'</a>?'; ?></p>
+                                              </div>
+                                            </div>
+                                        </td>
+                                      </tr><?php
+
+                                  }
+
+                                  ?>
+
+                                </tbody>
+                              </table>
+                      </div><?php } ?>
 
                 </div><!-- docs -->
 

@@ -65,7 +65,7 @@ class zbsDAL_addresses extends zbsDAL_ObjectLayer {
             // output model
             'input_type' => 'text',
             'label' => 'City',
-            'placeholder'=> 'e.g. London'
+            'placeholder'=> 'e.g. New York'
         ),
         'county'            => array(
             // db model:
@@ -73,7 +73,7 @@ class zbsDAL_addresses extends zbsDAL_ObjectLayer {
             // output model
             'input_type' => 'text',
             'label' => 'County',
-            'placeholder'=> 'e.g. Greater London'
+            'placeholder'=> 'e.g. Kings County'
         ),
         'postcode'          => array(
             // db model:
@@ -81,7 +81,7 @@ class zbsDAL_addresses extends zbsDAL_ObjectLayer {
             // output model
             'input_type' => 'text',
             'label' => 'Post Code',
-            'placeholder'=> 'e.g. E1 9XJ'
+            'placeholder'=> 'e.g. 10019'
         ),
         'country'           => array(
             // db model:

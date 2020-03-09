@@ -11,7 +11,6 @@ var zbsCRMFormsBlocker = false;
 jQuery(document).ready(function(){
  
 	// Infobox:
-		// Just reference directly: zbsCurr = window.zbJS_curr;
 
 		// Debug console.log('front end form script is here');
 		zbs_ajaxurl = jQuery('#zbs_form_ajax_action').data('zbsformajax');

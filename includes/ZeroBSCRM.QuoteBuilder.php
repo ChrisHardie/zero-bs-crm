@@ -36,17 +36,8 @@ function zbs_quote_pdf(){
         #} PDF Install check: 
         zeroBSCRM_extension_checkinstall_pdfinv();
 
-		#} require DOMPDF
-		#} ONLY once it's needed
-		require_once(ZEROBSCRM_PATH . 'includes/lib/dompdf-0-8-2/autoload.inc.php');
-
-
-		#use Dompdf\Options;
-		#use Dompdf\Dompdf;
-
-		# rather than use "use" which has to be used outside a func, you can do this:
-		#$dompdf = new Dompdf\Dompdf($options);
-
+		#} Require DOMPDF    	
+		$zbs->libLoad('dompdf');
 
 		#mikeaddnonce
 

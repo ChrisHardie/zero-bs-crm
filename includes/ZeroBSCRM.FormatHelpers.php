@@ -415,29 +415,20 @@ function zeroBSCRM_html_contactTimeline($contactID=-1,$logs=false,$contactObj=fa
         }
     }
 
-
-// wh moved for mike.
+// Builds HTML table of custom tables & values for (contact)
 function zeroBSCRM_pages_admin_display_custom_fields_table($id = -1){
 
-/* debug 
-  global $zbs;
-  $x = $zbs->DAL->getActiveCustomFields(array('objtypeid'=>ZBS_TYPE_CONTACT));
-  $xsr = print_r($x,1);
-  $fieldHideOverrides = $zbs->settings->get('fieldhides');
-  $xsr .= '<pre>'.print_r($fieldHideOverrides,1).'</pre>';
-  */
-
-  //gets the custom fields for the user and displays them in a table. Might be a LONG table if some have 60+ custom fields
+  // gets the custom fields for the user and displays them in a table. Might be a LONG table if some have 60+ custom fields
   $custom_fields = zeroBS_getContactCustomFields($id);
-  $html = '<table class="ui fixed single line celled table"><tbody>';
+  $html = '<table class="ui fixed single line celled table zbs-view-vital-customfields"><tbody>';
   if(is_array($custom_fields) && count($custom_fields) > 0){
       foreach($custom_fields as $k => $v){
-          $html .= '<tr id=" '.$v['id']. '">';
+          $html .= '<tr id="'.esc_attr($v['id']). '">';
              $html .= '<td class="zbs-view-vital-customfields-label">' . $v['name'] . '</td>';
              if ($v['type'] == 'date')
-             	$html .= '<td>' . zeroBSCRM_date_i18n(-1,$v['value'],false,true)  . '</td>';
+             	$html .= '<td class="zbs-view-vital-customfields-'.esc_attr($v['type']).'">' . zeroBSCRM_date_i18n(-1,$v['value'],false,true)  . '</td>';
              else
-             	$html .= '<td>' . $v['value']  . '</td>';
+             	$html .= '<td class="zbs-view-vital-customfields-'.esc_attr($v['type']).'">' . $v['value']  . '</td>';
           $html .= '</tr>';
       }
   }else{
@@ -942,7 +933,7 @@ function zeroBSCRM_html_transactionDate($transaction){
 		$navigationMode = zeroBSCRM_getSetting('objnav');
 		
 		#} The first addition of a contact is actually 'edit' but gives the option to view.
-		$id = zeroBSCRM_io_sanitizeInt($_GET['zbsid']);
+		$id = isset($_GET['zbsid']) && !empty($_GET['zbsid']) ? zeroBSCRM_io_sanitizeInt($_GET['zbsid']) : -1;
 
    		switch ($type){
 
@@ -1024,39 +1015,6 @@ function zeroBSCRM_html_transactionDate($transaction){
         return $html;
 
    }
-/*
-   #}duplicated here cos we have extra buttons on EDIT (save, and view links)
-   function zeroBSCRM_getObjNavEdit($id=-1, $key='', $type='CONTACT'){
-   		global $zbs;
-   		$navigation = zeroBSCRM_getNextPrevCustID($id);
-
-   		$html = '<span class="ui navigation-quick-links">
-                  <a href="' . esc_url(zeroBSCRM_getAdminURL($zbs->slugs["managecontacts"])) .'" class="ui button mini inverted basic">'. __("Back to List", "zero-bs-crm") . '</a>';
-
-
-                 if($navigation['prev'] != NULL){ 
-                 $html .= '<a href="' . zbsLink($key,$navigation['prev'],'zerobs_customer',false) .'" class="ui labeled icon button mini">
-                    <i class="left chevron icon"></i>Prev
-                  </a>';
-                  } 
-                  if($navigation['next'] != NULL){
-                  $html .= '<a href="' . zbsLink($key,$navigation['next'],'zerobs_customer',false) .'" class="ui right labeled icon button mini">
-                    <i class="right chevron icon"></i>Next
-                  </a>';
-					} 
-
-	    if (zeroBSCRM_permsCustomers()){
-	    	$html .= '<button class="ui icon button right floated tiny green labeled" type="button" id="zbs-edit-save" style="margin-right:5px;margin-left:5px;"><i class="icon save"></i>'.__('Save',"zero-bs-crm").'</button>';
-	    }
-
-    	$html .= '<a class="ui icon button blue right floated tiny labeled" href="'.zbsLink('view',$id,'zerobs_customer').'"><i class="eye left icon"></i> '.__('View Contact',"zero-bs-crm").'</a>';
-
-        $html .= '</span>';
-
-        return $html;
-
-   }
-*/
 /* ======================================================
   /	Object Nav
    ====================================================== */
@@ -1069,7 +1027,7 @@ function zeroBSCRM_html_transactionDate($transaction){
 
 	function zeroBSCRM_html_taskStatusLabel($task=array()){
 		
-		if (isset($task['complete']) && $task['complete']) return 'ui green label';
+		if (isset($task['complete']) && $task['complete'] === 1) return 'ui green label';
 
 		return 'ui grey label';
 

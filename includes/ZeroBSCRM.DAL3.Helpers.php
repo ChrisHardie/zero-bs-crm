@@ -114,6 +114,17 @@ function zeroBS_customerEmail($contactID='',$contactArr=false){
 
 }
 
+/**
+ * Retrieves all emails againast a contact
+ *
+ * @var int contactID
+ */
+function zeroBS_customerEmails($contactID=''){
+	
+	global $zbs; return $zbs->DAL->contacts->getContactEmails($contactID);
+
+}
+
 function zeroBS_customerMobile($contactID='',$contactArr=false){
 	
 	global $zbs; return $zbs->DAL->contacts->getContactMobile($contactID);
@@ -1571,9 +1582,9 @@ function zeroBS_getOwnerObj($wpUserID=-1,$simpleUserData=true){
 // NOTE - this is very generic & not to be used in future code
 // Use the direct $zbs->DAL->contacts->addUpdateContact code example in below rather than this generic.
 // kthx.
-function zeroBS_setOwner($objID=-1,$ownerID=-1,$objType=false){
+function zeroBS_setOwner($objID=-1,$ownerID=-1,$objTypeID=false){
 
-	if ($objID !== -1 && $objType !== false){
+	if ($objID !== -1 && $objTypeID !== false){
         
         // here we check that the potential owner CAN even own
         if (!user_can($ownerID,'admin_zerobs_usr')) return false;
@@ -1604,7 +1615,7 @@ function zeroBS_setOwner($objID=-1,$ownerID=-1,$objType=false){
 		return $zbs->DAL->setFieldByID(array(
 
                 'objID' => $objID,
-                'objTypeID' => $objType,
+                'objTypeID' => $objTypeID,
 
                 'colname' => 'zbs_owner',
                 'coldatatype' => '%d', // %d/s
@@ -7048,6 +7059,12 @@ function zeroBS___________DAL30Helpers(){return;}
 
 		if (!empty($alias)) {
 
+		// verify email?
+
+			if (!zeroBSCRM_validateEmail($alias)) return false;
+
+		// is in use?
+
 			// is customer with this email?
 			$existing = zeroBS_getCustomerIDWithEmail($alias);
 
@@ -7073,11 +7090,11 @@ function zeroBS___________DAL30Helpers(){return;}
 	#} Get specific alias if exists
 	function zeroBS_getObjAlias($objType=ZBS_TYPE_CONTACT,$objID=-1,$alias=''){
 
-		if (!empty($cID) && !empty($alias)) {
+		if (!empty($objID) && !empty($alias)) {
 
 			global $wpdb,$ZBSCRM_t;
 
-			$query = $wpdb->prepare( "SELECT ID,aka_alias,aka_create,aka_lastupdated FROM ".$ZBSCRM_t['aka']." WHERE aka_type = %d AND aka_id = %d AND aka_alias = %s", $objType, $objID, $alias);
+			$query = $wpdb->prepare( "SELECT ID,aka_alias,aka_created,aka_lastupdated FROM ".$ZBSCRM_t['aka']." WHERE aka_type = %d AND aka_id = %d AND aka_alias = %s", $objType, $objID, $alias);
 
 			$alias = $wpdb->get_row($query, ARRAY_A);
 
@@ -8565,14 +8582,28 @@ function zeroBSCRM_GenerateTempHash($str=-1,$length=20){
     	return zeroBS_getObjOwnerWPEmail($cID);
     }
 
-    // returns an obj owner's email as per their wp account
-	function zeroBS_getObjOwnerWPEmail($objID =-1, $objType = 'zerobs_customer'){
+
+    // returns an obj owner's email as set against their WordPress account
+	function zeroBS_getObjOwnerWPEmail($objID =-1, $objType = 'zerobs_customer',$objTypeID=ZBS_TYPE_CONTACT){
 	  
 	  if ($objID > 0){
-	    
-	    $ownerID = zeroBS_getOwner($objID,false,$objType);
 
-	    if ($ownerID > 0) return get_the_author_meta( 'user_email', $ownerID );
+	  	// convert if needed
+	  	if ($objTypeID < 1 && !empty($objType)){
+
+	  		global $zbs;
+	  		$objTypeID = $zbs->DAL->objTypeID($objType);
+	  		
+	  	}
+	    
+	    // retrieve
+	    if ($objTypeID > 0){
+
+	    	$ownerID = zeroBS_getOwner($objID,false,$objTypeID);
+
+	    	if ($ownerID > 0) return get_the_author_meta( 'user_email', $ownerID );
+
+	    }
 	      
 	  }
 

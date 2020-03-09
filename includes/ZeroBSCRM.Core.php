@@ -22,14 +22,14 @@ final class ZeroBSCRM {
 	 *
 	 * @var string
 	 */
-	public $version = '3.0.11';
+	public $version = '3.0.12';
 
 	/**
 	 * WordPress version tested with.
 	 *
 	 * @var string
 	 */
-	public $wp_tested = '5.2';
+	public $wp_tested = '5.3';
 
 	/**
 	 * WordPress update API version.
@@ -213,15 +213,28 @@ final class ZeroBSCRM {
 	 */
 	public $slugs; 
 
-
 	/**
 	 * Included Array (means we can not 'reinclude' stripe etc.)
-	 *
-	 * @var Zero BS CRM Slugs list
 	 */
 	public $included = array(
 
 		'stripe' => false
+
+	);
+
+	/**
+	 * Libraries included (3.0.12+)
+	 * Note: All paths need to be prepended by ZEROBSCRM_PATH before use
+	 */
+	private $libs = array(
+
+		'dompdf' => array(
+
+			'version' 	=> '0.8.3',
+			'path'		=> 'includes/lib/dompdf-0-8-3/',
+			'include' 	=> 'includes/lib/dompdf-0-8-3/autoload.inc.php'
+
+		)
 
 	);
 
@@ -2518,7 +2531,95 @@ final class ZeroBSCRM {
 
 		return false;
 
+	}	
+
+
+	// ========== Basic Library Management =========
+
+
+	/**
+	 * Retrieve array of details for a library
+	 * Returns: array() or false
+	 */
+	public function lib($libKey=''){
+
+		if (isset($this->libs[$libKey]) && is_array($this->libs[$libKey])) {
+
+			// update path to use ZEROBSCRM_PATH
+			$ret = $this->libs[$libKey];
+			$ret['path'] = ZEROBSCRM_PATH.$this->libs[$libKey]['path'];
+			$ret['include'] = ZEROBSCRM_PATH.$this->libs[$libKey]['include'];
+
+			return $ret;
+		}
+
+		return false;
 	}
+
+	/**
+	 * Retrieve root path for a library
+	 * Returns: str or false
+	 */
+	public function libPath($libKey=''){
+
+		if (isset($this->libs[$libKey]) && isset($this->libs[$libKey]['path'])) return ZEROBSCRM_PATH.$this->libs[$libKey]['path'];
+
+		return false;
+	}
+
+	/**
+	 * Retrieve full include path for a library
+	 * Returns: str or false
+	 */
+	public function libInclude($libKey=''){
+
+		if (isset($this->libs[$libKey]) && isset($this->libs[$libKey]['include'])) return ZEROBSCRM_PATH.$this->libs[$libKey]['include'];
+
+		return false;
+	}
+
+	/**
+	 * Retrieve version of a library
+	 * Returns: str or false
+	 */
+	public function libVer($libKey=''){
+
+		if (isset($this->libs[$libKey]) && isset($this->libs[$libKey]['version'])) return $this->libs[$libKey]['version'];
+
+		return false;
+	}
+
+	/**
+	 * Check if library already loaded
+	 * Returns: bool
+	 */
+	public function libIsLoaded($libKey=''){
+
+		if (isset($this->libs[$libKey]) && isset($this->libs[$libKey]['include']) && !isset($this->libs[$libKey]['loaded'])) return false;
+
+		return true;
+	}
+
+	/**
+	 * Load a library via include
+	 * Returns: str or false
+	 */
+	public function libLoad($libKey=''){
+
+		if (
+			isset($this->libs[$libKey]) && 
+			isset($this->libs[$libKey]['include']) && 
+			!isset($this->libs[$libKey]['loaded']) && 
+			file_exists(ZEROBSCRM_PATH.$this->libs[$libKey]['include'])
+		) {
+			require_once(ZEROBSCRM_PATH.$this->libs[$libKey]['include']);
+			$this->libs[$libKey]['loaded'] = true;
+		}
+
+		return false;
+	}
+
+	// ======= / Basic Library Management =========
 
 	// =========== Error Coding ===================
 

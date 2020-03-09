@@ -434,6 +434,40 @@ class zbsDAL_ObjectLayer {
 
     }
 
+    // Ownership - simplistic GET owner of obj
+    public function getOwner($objID=-1){
+
+        // check
+        if ($objID < 1) return false;
+    
+        return $this->DAL()->getObjectOwner(array(
+            
+            'objID'         => $objID,
+            'objTypeID'     => $this->objectType
+
+        ));
+
+    }
+
+    // Ownership - simplistic SET owner of obj
+    public function setOwner($objID=-1,$ownerID=-1){
+
+        // check
+        if ($objID < 1 || $ownerID < 1) return false;
+    
+        // set owner
+        return $this->DAL()->setObjectOwner(array(
+            
+            'objID'         => $objID,
+            'objTypeID'     => $this->objectType,
+            'ownerID'       => $ownerID
+
+        ));
+
+    }
+
+    
+
 
      /**
      * Wrapper, use $this->updateMeta($objid,$key,$val) for easy update of obj meta :)

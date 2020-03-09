@@ -442,81 +442,6 @@ function zeroBSCRM_wpb_lastlogin($uid ) {
 		return '';
 	}
 
-	#} Proper tried URL retrieval
-	/* Switched away from CURL for proper wp functions 29/10/19
-	function zeroBSCRM_retrieve($u,$withType=false,$return404s=false,$passPost=array()){
-		
-		try {
-
-			if( function_exists('curl_init') ) { 
-
-					$ch = curl_init($u);
-					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); #} Follow 301's
-
-					#UA? #v212
-					#old $ua="Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Ubuntu/10.04 Chromium/7.0.514.0 Chrome/7.0.514.0 Safari/534.7";
-					#wmbpro
-					$ua='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36';
-					 if ($ua!="") {
-							curl_setopt($ch, CURLOPT_USERAGENT, $ua);
-						} else {
-							curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-						}
-
-					#} Any post?
-					if (is_array($passPost) && count($passPost) > 0){
-
-						//url-ify the data for the POST
-						foreach($passPost as $key=>$value) { $passPost_string .= $key.'='.$value.'&'; }
-						rtrim($passPost_string, '&');
-
-						curl_setopt($ch,CURLOPT_POST, count($passPost));
-						curl_setopt($ch,CURLOPT_POSTFIELDS, $passPost_string);
-
-					}
-
-					$ret = curl_exec($ch);
-					$headerhttpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-					if ($withType) $ctype = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-					curl_close($ch);
-
-					if ($headerhttpcode == 404 || $headerhttpcode == 500) $ret = '';
-
-					
-			} else $ret = file_get_contents($u);
-		} catch (Exception $e){
-			$ret = false;	
-		}
-
-		if ($withType)
-			return array($ret,$ctype);
-		else
-			return $ret;
-		
-	}
-	*/
-
-	#} Proper tried URL retrieval
-	/* this works well, but isn't very wp, had to switch out 29/10 for below
-	function zeroBSCRM_retrieveFile($u,$filepath){
-
-	 	 $fp = fopen($filepath, 'w+');
-	     $ch = curl_init($u);
-
-	     curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
-	     curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-	     //curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
-	     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-	     curl_setopt($ch, CURLOPT_FILE, $fp);
-	     curl_exec($ch);
-
-	     curl_close($ch);
-	     fclose($fp);
-
-	     return (filesize($filepath) > 0)? true : false;
-
-	} */
 
 	// as clean as zeroBSCRM_retrieveFile was above, we needed to wpify for .org.
 	// here's an adaptation of https://wordpress.stackexchange.com/questions/50094/wp-remote-get-downloading-and-saving-files
@@ -701,32 +626,6 @@ function zeroBSCRM_wpb_lastlogin($uid ) {
         
         return $p;
     }
-
-   	##WLREMOVE
-    // logs an internal page hit in active period of telemetry
-    // p = page slug
-    /*function zeroBSCRM_teleLog($p=''){
-
-    	// defunct 2.7+
-	    return true;
-    }*/
-
-    // logs a deactivate/activate
-    // activate = 2 /deactive = 3
-    /*function zeroBSCRM_teleLogAct($a=false){
-
-    	// defunct 2.7+
-    	return true;
-    }
-
-    // logs a user hitting page (adds to unique user count)
-    // $u = username
-    function zeroBSCRM_teleLogUsr($u=false){
-
-    	// defunct 2.7+
-    	return true;
-    }*/
-   	##/WLREMOVE
 
 	// ============= / TELEMETRY SECTION
 
@@ -955,6 +854,20 @@ function zeroBSCRM_wpb_lastlogin($uid ) {
 
 	    }
 
+	}
+
+	// simplistic directory empty check
+	function zeroBSCRM_is_dir_empty($dir) {
+	  if (!is_readable($dir)) return null; 
+	  $handle = opendir($dir);
+	  while (false !== ($entry = readdir($handle))) {
+	    if ($entry !== '.' && $entry !== '..') {
+	      closedir($handle);
+	      return false;
+	    }
+	  }
+	  closedir($handle);
+	  return true;
 	}
 
 /* ======================================================

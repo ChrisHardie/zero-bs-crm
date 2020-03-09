@@ -151,14 +151,12 @@
                             <?php
                           }
                         }
-              /*} else {
-
-                  echo zeroBSCRM_UI2_messageHTML('info hidden',__('No Tags Found',"zero-bs-crm"),__('There are no Tags here, create one using the box to the right.',"zero-bs-crm"),'disabled warning sign','zbsNoResults');
-
-              }*/
                       ?>
                   </tbody>
                 </table><?php
+
+                if (count($tags) == 0) echo zeroBSCRM_UI2_messageHTML('info',__('No Tags Found',"zero-bs-crm"),__('There are no Tags here, create one using the box to the right.',"zero-bs-crm"),'disabled warning sign','zbsNoTagResults');
+
 
                 ?><script type="text/javascript">
             <?php #} Nonce for AJAX
