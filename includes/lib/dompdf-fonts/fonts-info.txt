@@ -1,0 +1,6 @@
+==========================
+== Generated 15/01/2020 ==
+==========================
+Included:
+- Noto Sans: https://fonts.google.com/specimen/Noto+Sans?selection.family=Noto+Sans
+	- (All available languages)

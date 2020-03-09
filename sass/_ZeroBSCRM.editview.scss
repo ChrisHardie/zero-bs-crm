@@ -1,0 +1,478 @@
+/*!
+ * Zero BS CRM
+ * http://www.zerobscrm.com
+ * V2.52+
+ *
+ * Copyright 2018, Zero BS Software Ltd. & Zero BS CRM.com
+ *
+ * Date: 27/02/18
+ */
+
+
+// actions metabox
+#zerobs-customer-actions-box {
+
+	#zbs-contact-edit-avatar {
+
+		text-align:center;
+    	margin-bottom: 1em;   
+
+    	// round avatars
+    	.ui.circular.segment h2 img {
+    		border-radius: 50% !important;
+    	}
+    	// removed for gravatars, 2.97.7 on ms request ZBS-619 
+    	.ui.segment h2 img.zbs-gravatar {
+    		border-radius: none !important;
+    	}
+
+		.ui.segment {
+
+			margin-left:auto;
+			margin-right:auto;
+			display:inline-block;
+
+			i.icon, img {
+				margin-top:0 !important;
+				margin-right:0 !important;
+				width: auto;
+    			max-width: 100px;
+			}
+
+			h2.header {
+				margin-bottom:0 !important;
+			}
+
+			button.ui.circular {
+
+				position: absolute;
+			    top: 0;
+			    right: -0.5em;
+			    display: inline-block;
+    			background: #FFF !important;
+
+			}
+
+		}
+	}
+
+	// NOTE this is also in contact single! copy any changes if made:
+	.action-wrap {
+		
+	    display: block;
+	    position: relative;
+	    text-align: center;
+	    
+	}
+
+	// using actual .button breaks the css.. for now, hackily putting htis in here to simulate basic button
+	// NOTE this is also in contact single! copy any changes if made:
+	.action-button {
+	    cursor: pointer;
+	    display: inline-block;
+	    min-height: 1em;
+	    outline: none;
+	    border: none;
+	    vertical-align: baseline;
+	    //background: #E0E1E2 none;
+	    color: rgba(0,0,0,0.6);
+	    font-family: "Lato","Helvetica Neue",Arial,Helvetica,sans-serif;
+	    margin: 0em 0.25em 0em 0em;
+	    padding: 0.78571429em 1.5em 0.78571429em;
+	    text-transform: none;
+	    text-shadow: none;
+	    font-weight: bold;
+	    line-height: 1em;
+	    font-style: normal;
+	    text-align: center;
+	    text-decoration: none;
+	    border-radius: 0.28571429rem;
+	    box-shadow: 0px 0px 0px 1px transparent inset, 0px 0em 0px 0px rgba(34,36,38,0.15) inset;
+	    -webkit-user-select: none;
+	    -moz-user-select: none;
+	    -ms-user-select: none;
+	    user-select: none;
+	    -webkit-transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+	    transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+	    will-change: '';
+	    -webkit-tap-highlight-color: transparent;
+
+	    font-size: 1rem;
+
+	    //background: transparent none !important;
+	    color: rgba(0,0,0,0.6) !important;
+	    font-weight: normal;
+	    border-radius: 0.28571429rem;
+	    text-transform: none;
+	    text-shadow: none !important;
+	    box-shadow: 0px 0px 0px 1px rgba(34,36,38,0.15) inset;
+
+	    box-shadow: 0px 0px 0px 1px #21BA45 inset !important;
+	    color: #21BA45 !important;
+
+	    background: #FFF !important;
+	}
+
+}
+
+// prev: #zerobs-customer-tags-box
+.zbs-edit-tags-box-wrap {
+
+	#zbs-tags-wrap {
+
+		margin-top:1em;
+
+
+		.ui.label {
+
+    		margin-bottom: 0.4em;
+		}
+	}
+
+	// TAG SUGGESTION ENGINE
+	#zbs-tags-suggestions-wrap {
+
+		h4,.zbs-tags-suggestions-title {
+			margin-top: 1em;
+			margin-bottom: 0.4em;
+		}
+		.ui.label {
+
+    		margin-bottom: 0.4em;
+		}
+		.zbsTagSuggestion {
+
+		}
+		.zbsTagSuggestion:hover
+		 {
+			cursor: pointer;
+			color: #000 !important;
+		}
+		#zbs-tag-suggestions-show-more:hover,
+		#zbs-tag-suggestions-show-less:hover {
+			cursor: pointer;
+			color: #2284d1 !important;
+
+		}
+		#zbs-tag-suggestions-more-wrap {
+
+			display:none; // init
+
+		}
+	}
+}
+
+#zbs-edit-notification-wrap {
+
+    margin: 2em;
+    margin-top: 1em;
+    margin-bottom: 0;
+	
+}
+
+ /* This is all from list view, may need, cull if not inc
+
+#zbs-edit-top-bar {
+
+    color: white;
+    background: #3f4348;
+    padding-left: 25px;
+    padding-bottom: 11px;
+    margin-left: -25px;
+    padding-right: 25px;
+    margin-right: -25px;
+    margin-top: 0px;
+    margin-bottom:20px;
+
+}
+
+.zbs-add-new{
+	margin-left: 10px;
+    margin-right: -5px;
+}
+
+#zbs-edit-field-editor {
+
+    margin-bottom: 46px;
+    margin-top: 16px;
+
+	#zbs-column-manager-current-fields {
+		
+		// needed to drop into empty list:
+		min-height:34px;
+
+		.ui.basic.button {
+			margin-top:4px;
+		}
+
+	}
+	#zbs-column-manager-available-fields {
+
+		// needed to drop into empty list:
+		min-height:34px;
+
+		.ui.basic.button {
+			margin-top:4px;
+		}
+
+	}
+
+}
+
+#zbs-edit-tags, #zbs-edit-filters {
+
+	a.button {
+		margin-bottom:3px;
+	}
+
+}
+
+// fix for overflowing tables (peeps adding many columns)
+#zbs-edit-table-wrap {   
+
+	// this squashes table:
+	// https://github.com/Semantic-Org/Semantic-UI/issues/1914
+  	// table { table-layout: fixed }
+
+	// or just show scroll bar ... 
+	overflow-x: auto;
+	// and pad base
+	table { margin-bottom:20px; }
+
+	padding-right: 30px;
+
+}
+
+#zbs-edit-table-wrap table td a.ui.label {
+	margin-bottom:3px;
+}
+
+.zbs-edit-view-edit-button {
+
+    background: #FFF !important;
+    margin-top: -6px !important;
+}
+.zbs-edit-view-edit-button.active {
+
+    background: #CCC !important;
+
+}
+
+.zbs-filter-manager-connected {
+
+	// needed to drop into empty list:
+	min-height:34px;
+
+		.ui.basic.button {
+			margin-top:4px;
+		}
+}
+
+// ==========  bulk actions bits
+
+// bulk checkbox
+.zbs-editview-bulk-hd, .zbs-editview-bulk {
+
+	//text-align:center !important;
+	padding-left: 0 !important;
+
+	.ui.fitted.checkbox {
+
+		padding-left: 13px !important;
+
+	}
+
+}
+
+.zbs-editview-bulk-hd {
+	max-width: 40px !important;
+	width: 40px !important;
+	min-width: 40px !important; // for compacted tables
+}
+
+#zbs-editview-footer-count {
+
+	padding-bottom: 0.5em;
+
+}
+#zbsbulkactions {
+	
+	border-top: 1px solid #cec3da;
+    padding-top: 0.5em;
+    display: inline-block;
+
+}
+
+
+// this corrects a glitch in labels + checkboxes
+.zbs-select-tag.ui.label {
+
+	// except this, this just margins next tag
+	margin-right: 0.6em;
+
+	.ui.checkbox {
+
+		    margin-top: 0;
+		    margin-bottom: 0;
+		    padding-left: 0 !important;
+
+		    label {
+
+    			margin-bottom: 0;
+
+		    }
+	
+	}
+
+}
+
+// blue labels = white text
+.zbs-select-tag.ui.label.blue .ui.checkbox label {
+ 	
+ 	   color: #FFF;
+ 	   
+}
+
+
+// ==========  / bulk actions bits
+
+//ui header stuff
+
+.ui.header>.image:not(.icon), .ui.header>img {
+    display: inline-block;
+    margin-top: 0.14285714em;
+    // WH says Nope. - breaks company avatar imgs width: 12%;
+    height: auto;
+    vertical-align: middle;
+}
+
+.more-tags{
+	display:none;
+}
+
+#zbs-edit-tags a{
+	max-width: 60%;//wh tweaked, looks better to me, width: 135px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#zbs-edit-sidebar-wrap{
+	padding-right:30px;
+}
+
+.ui.header > img + .content, .ui.header > .image + .content {
+    padding-left: 0.75rem;
+    vertical-align: middle;
+    max-width: 88%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.ui.menu .ui.dropdown .menu > .item:hover {
+    background: rgb(63, 67, 71) !important;
+    color: rgb(255, 255, 255) !important;
+}
+
+.clearfilters{
+    position: absolute;
+    top: 16px !important;
+    margin-left: 5px !important;
+}
+
+#learn {
+    margin-right: 0;
+}
+#zbs-editview-clearfilters {
+    margin-left: 6px !important;
+}
+#zbs-editview-biline{
+    display: inline-block;
+    margin-left: 10px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+// hide under 1080px
+@media (max-width: 1080px) {
+	#zbs-editview-biline{
+		display:none !important;
+	}
+}
+
+
+// company list contacts HTML..
+
+.zero-bs-crm_page_manage-companies-crm{
+	.zbs-co-img{
+		img{
+			width:30px;
+			height:auto;
+			float:left;
+			margin-right:2px;
+			border-radius:50%;
+		}
+	}
+
+
+
+}
+
+// avatar's fixed size 
+#zbs-edit-wrap {
+
+	.zbs-co-img img, 
+	.name-and-avatar-list h4.ui.image.header img {
+
+		max-width:40px !important;
+
+	}
+} */
+
+
+// err msg fix
+#zbs-edit-warnings-wrap .ui.message {
+	
+    max-width: 80%;
+    margin-bottom: 5em;
+    margin-top: 4em;
+    margin-left: auto;
+    margin-right: Auto;
+    
+}
+
+//.zbs-generic-save-wrap (save, update etc. boxes for our objs)
+.zbs-generic-save-wrap {
+
+	text-align: center; 
+
+	.ui.header {
+		margin-top: 0 !important;
+	}
+}
+
+.zbs-objedit-actions-bottom {
+	margin-top:1em;
+
+	.zbs-objedit-actions-delete {
+    	margin-top: 0.6em;
+	}
+}
+
+
+// e.g. can't load cos of perms
+#zbs-obj-edit-precheck-fail {
+
+    padding-top: 5em;
+
+}
+
+// fix for zbs-hide not working at high res's
+// https://zbsltd.atlassian.net/browse/ZBS-960
+@media (min-width: 1500px){
+	.zbs-hide,
+	tr.zbs-field-group-tr .zbs-field-group.zbs-hide {
+		display:none !important;
+	}
+}

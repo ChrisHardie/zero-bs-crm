@@ -1,0 +1,50 @@
+
+
+// "step 2" box at bottom of details editor
+.zbs-move-on-wrap {
+
+    padding: 60px 40px 20px 40px;
+    text-align: center;
+
+    // template select
+    select.form-control {
+    	
+    	max-width: 360px !important;
+    	display: inline-block !important;
+
+    }
+
+}
+
+// button margin
+#zbsQuoteBuilderStep2 {
+    margin-top:10px;
+}
+
+
+//  initially hidden, content box
+#zerobs-quote-content-edit, #zerobs-quote-nextstep, // DAL3
+#wpzbscsub_quotecontent, #wpzbscsub_quoteactions // <DAL3
+{
+
+	display:none;
+
+}
+// final actions
+.zbsEmailOrShare {
+
+	width:30%;
+	padding:40px 20px;
+	text-align:center;
+    display: inline-block !important;
+    vertical-align: top;
+    border: 1px solid #CCC;
+    border-radius:4px;
+    min-height:124px;
+
+
+    .small {
+        font-size:11px;
+    }
+
+}

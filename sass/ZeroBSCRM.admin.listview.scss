@@ -1,0 +1,76 @@
+/*!
+ * Zero BS CRM
+ * http://www.zerobscrm.com
+ * V2.2
+ *
+ * Copyright 2017, ZeroBSCRM.com
+ *
+ * Date: 29/07/2017
+ */
+
+ 	// Req.
+	@charset "UTF-8";
+
+	  
+  	// WH fixes for clashes between wp + semantic when nested
+	@import 'wp-semantic-fixes'; 
+
+	/* 
+
+		#} Lovely semantic UI via:
+		https://github.com/doabit/semantic-ui-sass
+		https://stackoverflow.com/questions/41948858/semantic-ui-how-to-prevent-semantic-ui-css-file-from-globally-taking-over-othe
+
+		NOTE: Had to modify _icon.scss to get this to work with our dir
+
+		
+		@font-face {
+		  font-family: 'Icons';
+		  src: url("./semantic-ui/themes/default/assets/fonts/icons.eot");
+		  src: url("./semantic-ui/themes/default/assets/fonts/icons.eot?#iefix") format('embedded-opentype'), url("./semantic-ui/themes/default/assets/fonts/icons.woff2") format('woff2'), url("./semantic-ui/themes/default/assets/fonts/icons.woff") format('woff'), url("./semantic-ui/themes/default/assets/fonts/icons.ttf") format('truetype'), url("./semantic-ui/themes/default/assets/fonts/icons.svg#icons") format('svg');
+		  font-style: normal;
+		  font-weight: normal;
+		  font-variant: normal;
+		  text-decoration: inherit;
+		  text-transform: none;
+		}
+
+	*/
+
+	//.zbs-semantic { 
+
+		// semantic
+	  	@import 'semantic-ui';
+
+	//}
+
+
+//weirdly this was not being applied in semantic.min.css on list view pages so adding here too
+.ui.dropdown .menu .left.menu {
+    left: auto !important;
+    right: 100%;
+    margin: 0em 0em 0em 0em !important;
+    border-radius: 0.28571429rem !important;
+}
+
+.ui.simple.dropdown:hover>.menu>.item:hover>.left{
+	left: auto !important;
+}
+
+//company contact images
+
+.zbs-co-img{
+	float:left;
+	img{
+		border-radius:50%;
+		max-width:30px;
+		height:auto;
+		margin-right:5px;
+	}
+}
+
+
+
+
+	// my actual list view page styles
+	@import 'ZeroBSCRM.listview';
